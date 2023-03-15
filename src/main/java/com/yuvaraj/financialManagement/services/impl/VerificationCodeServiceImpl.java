@@ -62,7 +62,7 @@ public class VerificationCodeServiceImpl implements VerificationCodeService {
     public void sendVerification(String identifier, VerificationCodeEntity.Type type) throws VerificationCodeMaxLimitReachedException, VerificationCodeResendNotAllowedException, InvalidAlgorithmParameterException, NoSuchPaddingException, UnsupportedEncodingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
         //TODO: Handle tokenization verification id and send user
         Preconditions.checkNotNull(identifier, "identifier cannot be null");
-        Preconditions.checkNotNull(identifier, "type cannot be null");
+        Preconditions.checkNotNull(type, "type cannot be null");
         int resendRetriesCount = 1;
         log.info("[{}]: Initiating send verification. identifier={}", identifier, identifier);
         VerificationCodeEntity verificationCodeEntity;

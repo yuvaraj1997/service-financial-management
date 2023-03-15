@@ -52,6 +52,10 @@ public class UserEntity implements Serializable {
     @JoinColumn(name = "ut_authority_id", referencedColumnName = "at_id")
     private AuthorityEntity authorityEntity;
 
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "ut_password_id", referencedColumnName = "pt_id")
+    private PasswordEntity passwordEntity;
+
     @Column(name = "ut_status")
     private String status;
 
@@ -68,7 +72,7 @@ public class UserEntity implements Serializable {
     @Getter
     @AllArgsConstructor
     public enum Type {
-        CUSTOMER("CUSTOMER");
+        USER("USER");
 
         private final String type;
     }

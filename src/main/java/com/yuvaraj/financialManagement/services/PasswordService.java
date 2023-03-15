@@ -1,7 +1,7 @@
 package com.yuvaraj.financialManagement.services;
 
-import com.yuvaraj.financialManagement.models.db.UserEntity;
 import com.yuvaraj.financialManagement.models.db.PasswordEntity;
+import com.yuvaraj.financialManagement.models.db.UserEntity;
 
 /**
  *

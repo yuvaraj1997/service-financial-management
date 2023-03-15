@@ -9,9 +9,9 @@ import com.yuvaraj.financialManagement.models.controllers.v1.forgotPassword.post
 import com.yuvaraj.financialManagement.models.controllers.v1.forgotPassword.postForgotPasswordUpsert.PostForgotPasswordUpsertRequest;
 import com.yuvaraj.financialManagement.models.db.UserEntity;
 import com.yuvaraj.financialManagement.models.db.VerificationCodeEntity;
-import com.yuvaraj.financialManagement.services.UserService;
 import com.yuvaraj.financialManagement.services.ForgotPasswordService;
 import com.yuvaraj.financialManagement.services.PasswordService;
+import com.yuvaraj.financialManagement.services.UserService;
 import com.yuvaraj.financialManagement.services.VerificationCodeService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,7 +42,7 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
     public void processPostForgotPassword(PostForgotPasswordRequest postForgotPasswordRequest) throws InvalidAlgorithmParameterException, NoSuchPaddingException, UnsupportedEncodingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
         UserEntity userEntity = userService.findByEmailTypeSubtypeAndStatuses(
                 postForgotPasswordRequest.getEmailAddress(),
-                UserEntity.Type.CUSTOMER.getType(),
+                UserEntity.Type.USER.getType(),
                 UserEntity.SubType.NA.getSubType(),
                 List.of(UserEntity.Status.SUCCESS.getStatus())
         );

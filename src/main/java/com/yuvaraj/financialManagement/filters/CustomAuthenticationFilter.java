@@ -74,7 +74,9 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
             signInService.handleSignInData(user, authSuccessfulResponse, user.getSignInRequest());
             log.info("{}", JsonHelper.toJson(authSuccessfulResponse));
             new ObjectMapper().writeValue(response.getOutputStream(), authSuccessfulResponse);
-        } catch (InvalidAlgorithmParameterException | NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException | NoSuchAlgorithmException | InvalidKeyException | SignInMaxSessionReachedException e) {
+        } catch (InvalidAlgorithmParameterException | NoSuchPaddingException | IllegalBlockSizeException |
+                 BadPaddingException | NoSuchAlgorithmException | InvalidKeyException |
+                 SignInMaxSessionReachedException e) {
             throw new AuthenticationServiceException(e.getMessage(), e);
         }
     }

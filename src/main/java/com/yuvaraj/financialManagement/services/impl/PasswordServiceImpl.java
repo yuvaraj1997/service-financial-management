@@ -1,11 +1,11 @@
 package com.yuvaraj.financialManagement.services.impl;
 
 import com.google.common.base.Preconditions;
-import com.yuvaraj.financialManagement.models.db.UserEntity;
 import com.yuvaraj.financialManagement.models.db.PasswordEntity;
+import com.yuvaraj.financialManagement.models.db.UserEntity;
 import com.yuvaraj.financialManagement.repositories.PasswordRepository;
-import com.yuvaraj.financialManagement.services.UserService;
 import com.yuvaraj.financialManagement.services.PasswordService;
+import com.yuvaraj.financialManagement.services.UserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -24,7 +24,7 @@ public class PasswordServiceImpl implements PasswordService {
     @Override
     public void upsertPassword(String password, String customerId) {
         Preconditions.checkNotNull(password, "password cannot be null");
-        Preconditions.checkNotNull(password, "customerId cannot be null");
+        Preconditions.checkNotNull(customerId, "customerId cannot be null");
         UserEntity userEntity = userService.findById(customerId);
         Preconditions.checkNotNull(userEntity, "userEntity could not be found customerId = " + customerId);
         PasswordEntity passwordEntity = getByCustomerEntity(userEntity);
@@ -35,13 +35,14 @@ public class PasswordServiceImpl implements PasswordService {
         }
         passwordEntity = new PasswordEntity();
         passwordEntity.setPassword(password);
-        passwordEntity.setUserEntity(userEntity);
+//        passwordEntity.setUserEntity(userEntity);
         passwordEntity.setStatus(PasswordEntity.Status.ACTIVE.getStatus());
         passwordRepository.save(passwordEntity);
     }
 
     @Override
     public PasswordEntity getByCustomerEntity(UserEntity userEntity) {
-        return passwordRepository.findByCustomerEntity(userEntity);
+//        return passwordRepository.findByCustomerEntity(userEntity);
+        return null;
     }
 }

@@ -16,4 +16,8 @@ public interface UserRepository extends JpaRepository<UserEntity, String> {
 
     @Query("SELECT c FROM UserEntity c WHERE c.email = ?1")
     UserEntity findByEmail(String email);
+
+
+    @Query("SELECT c FROM UserEntity c JOIN FETCH c.passwordEntity WHERE c.email = ?1")
+    UserEntity findByEmailWithPassword(String email);
 }

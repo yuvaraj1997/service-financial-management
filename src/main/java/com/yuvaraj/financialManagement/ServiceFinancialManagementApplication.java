@@ -1,5 +1,7 @@
 package com.yuvaraj.financialManagement;
 
+import com.yuvaraj.financialManagement.models.db.AuthorityEntity;
+import com.yuvaraj.financialManagement.models.db.UserEntity;
 import com.yuvaraj.financialManagement.repositories.AuthorityRepository;
 import com.yuvaraj.financialManagement.repositories.UserRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -19,13 +21,22 @@ public class ServiceFinancialManagementApplication {
     @Bean
     CommandLineRunner run(AuthorityRepository authorityRepository, UserRepository userRepository) {
         return args -> {
-//			authorityRepository.save(new AuthorityEntity(null, "test", "test", null, null));
-//			authorityRepository.save(new AuthorityEntity(null, "Customer", "ROLE_CUSTOMER", null, null));
-//			authorityRepository.save(new AuthorityEntity(null, "Merchant", "ROLE_MERCHANT", null, null));
-//			AuthorityEntity authorityEntity = authorityRepository.getById(AuthorityEntity.Role.ROLE_CUSTOMER.getId());
-//			UserEntity userEntity = customerRepository.save(new UserEntity(
-//					null, UserEntity.Type.CUSTOMER.getType(), UserEntity.SubType.NA.getSubType(),
-//					"Admin", "Admin", "admin2@gmail.com", "60123531234", null, null, authorityEntity, UserEntity.Status.SUCCESS.getStatus(), null, null
+            for (AuthorityEntity.Role role : AuthorityEntity.Role.values()) {
+                authorityRepository.save(new AuthorityEntity(role.getId(), role.getName(), role.getRole(), null, null));
+            }
+            UserEntity userEntity = userRepository.findByEmailWithPassword("admin2@gmail.com");
+            if (null != userEntity.getPasswordEntity()) {
+                userEntity.getPasswordEntity().setPassword("updated");
+                userRepository.save(userEntity);
+            }
+            log.info("test");
+//			AuthorityEntity authorityEntity = authorityRepository.getById(AuthorityEntity.Role.USER.getId());
+//			UserEntity userEntity = userRepository.save(new UserEntity(
+//					null, UserEntity.Type.USER.getType(), UserEntity.SubType.NA.getSubType(),
+//					"Admin", "Admin", "admin2@gmail.com", "60123531234", null,
+//                    authorityEntity,
+//                    new PasswordEntity(null, "password", PasswordEntity.Status.ACTIVE.getStatus(), null, null),
+//                    UserEntity.Status.SUCCESS.getStatus(), null, null
 //			));
 //			userEntity = customerRepository.findByEmailAndStatus("admin@gmail.com", UserEntity.Status.SUCCESS.getStatus());
 //			UserEntity userEntity = customerRepository.findByEmailTypeSubtypeAndStatuses(

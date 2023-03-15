@@ -21,14 +21,13 @@ import java.util.Date;
 public class AuthorityEntity implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "at_id")
     private Long id;
 
     @Column(name = "at_name", nullable = false)
     private String name;
 
-    @Column(name = "at_role", nullable = false)
+    @Column(name = "at_role", nullable = false, unique = true)
     private String role;
 
     @CreationTimestamp
@@ -44,10 +43,14 @@ public class AuthorityEntity implements Serializable {
     @Getter
     @AllArgsConstructor
     public enum Role {
-        ROLE_CUSTOMER(1, "ROLE_CUSTOMER"),
-        ROLE_SUPER_ADMIN(2, "ROLE_SUPER_ADMIN");
+
+        SUPER_ADMIN(1, "Super Admin", "SUPER_ADMIN"),
+        USER(2, "User", "USER");
 
         private final long id;
+        private final String name;
         private final String role;
+
+
     }
 }

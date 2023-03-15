@@ -1,17 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <databaseChangeLog
-        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
-        xmlns:pro="http://www.liquibase.org/xml/ns/pro"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-		http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
-		http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
-		http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
+		http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
     <changeSet id="20220819" author="Yuvaraj">
         <createTable tableName="user_tab">
             <column name="ut_id" type="varchar(255)">
-                <constraints primaryKey="true" primaryKeyName="ct_id_pk" />
+                <constraints primaryKey="true" primaryKeyName="ct_id_pk"/>
             </column>
             <column name="ut_type" type="varchar(45)"/>
             <column name="ut_subtype" type="varchar(45)"/>
@@ -25,5 +21,61 @@
             <column name="ut_record_create_date" type="DATETIME"/>
             <column name="ut_record_update_date" type="DATETIME"/>
         </createTable>
+    </changeSet>
+    <changeSet id="202303141512" author="Yuvaraj">
+        <createTable tableName="authority_tab">
+            <column name="at_id" type="varchar(255)">
+                <constraints primaryKey="true" primaryKeyName="at_id_pk"/>
+            </column>
+            <column name="at_name" type="varchar(255)"/>
+            <column name="at_role" type="varchar(45)"/>
+            <column name="at_record_create_date" type="DATETIME"/>
+            <column name="at_record_update_date" type="DATETIME"/>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="ut_authority_id"
+                                 baseTableName="user_tab"
+                                 constraintName="fk_user_authority_id"
+                                 referencedColumnNames="at_id"
+                                 referencedTableName="authority_tab"/>
+    </changeSet>
+    <changeSet id="202303151545" author="Yuvaraj">
+        <createTable tableName="verification_code_tab">
+            <column name="vct_id" type="varchar(255)">
+                <constraints primaryKey="true" primaryKeyName="vct_id_pk"/>
+            </column>
+            <column name="vct_identifier" type="varchar(255)"/>
+            <column name="vct_type" type="varchar(45)"/>
+            <column name="vct_code" type="varchar(45)"/>
+            <column name="vct_expiry_date" type="DATETIME"/>
+            <column name="vct_resend_retries" type="INT(1)"/>
+            <column name="vct_verified_date" type="DATETIME"/>
+            <column name="vct_status" type="varchar(45)"/>
+            <column name="vct_record_create_date" type="DATETIME"/>
+            <column name="vct_record_update_date" type="DATETIME"/>
+        </createTable>
+        <createTable tableName="password_tab">
+            <column name="pt_id" type="varchar(255)">
+                <constraints primaryKey="true" primaryKeyName="pt_id_pk"/>
+            </column>
+            <column name="pt_password" type="varchar(255)"/>
+            <column name="pt_status" type="varchar(45)"/>
+            <column name="pt_record_create_date" type="DATETIME"/>
+            <column name="pt_record_update_date" type="DATETIME"/>
+        </createTable>
+        <addColumn tableName="user_tab">
+            <column name="ut_password_id"
+                    type="varchar(255)"
+                    afterColumn="ut_authority_id"/>
+        </addColumn>
+        <addForeignKeyConstraint baseColumnNames="ut_password_id"
+                                 baseTableName="user_tab"
+                                 constraintName="fk_user_password_id"
+                                 referencedColumnNames="pt_id"
+                                 referencedTableName="password_tab"/>
+    </changeSet>
+    <changeSet id="202303151610" author="Yuvaraj">
+        <addUniqueConstraint tableName="authority_tab"
+                             columnNames="at_role"
+                             constraintName="at_role_unique"/>
     </changeSet>
 </databaseChangeLog>

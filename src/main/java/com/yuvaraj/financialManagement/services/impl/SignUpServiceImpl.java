@@ -1,7 +1,7 @@
 package com.yuvaraj.financialManagement.services.impl;
 
-import com.yuvaraj.financialManagement.exceptions.UserNotFoundException;
 import com.yuvaraj.financialManagement.exceptions.InvalidArgumentException;
+import com.yuvaraj.financialManagement.exceptions.UserNotFoundException;
 import com.yuvaraj.financialManagement.exceptions.signup.UserAlreadyExistException;
 import com.yuvaraj.financialManagement.exceptions.verification.VerificationCodeExpiredException;
 import com.yuvaraj.financialManagement.exceptions.verification.VerificationCodeMaxLimitReachedException;
@@ -92,11 +92,11 @@ public class SignUpServiceImpl implements SignUpService {
 
     private UserEntity createCustomerRecord(PostSignUpRequest postSignUpRequest) {
         UserEntity userEntity = new UserEntity();
-        userEntity.setType(UserEntity.Type.CUSTOMER.getType());
+        userEntity.setType(UserEntity.Type.USER.getType());
         userEntity.setSubtype(UserEntity.SubType.NA.getSubType());
         userEntity.setEmail(postSignUpRequest.getEmailAddress());
         userEntity.setFullName(postSignUpRequest.getFullName());
-        userEntity.setAuthorityEntity(authorityService.getById(AuthorityEntity.Role.ROLE_CUSTOMER.getId()));
+        userEntity.setAuthorityEntity(authorityService.getById(AuthorityEntity.Role.USER.getId()));
         userEntity.setStatus(UserEntity.Status.VERIFICATION_PENDING.getStatus());
         return userService.save(userEntity);
     }
@@ -115,7 +115,7 @@ public class SignUpServiceImpl implements SignUpService {
     private UserEntity getAnyExistingRecordIfAvailable(String emailAddress) {
         return userService.findByEmailTypeSubtypeAndStatuses(
                 emailAddress,
-                UserEntity.Type.CUSTOMER.getType(),
+                UserEntity.Type.USER.getType(),
                 UserEntity.SubType.NA.getSubType(),
                 List.of(
                         UserEntity.Status.VERIFICATION_PENDING.getStatus()
@@ -126,14 +126,14 @@ public class SignUpServiceImpl implements SignUpService {
     private void checkIfUserAlreadyExist(String emailAddress) throws UserAlreadyExistException {
         UserEntity userEntity = userService.findByEmailTypeSubtypeAndStatuses(
                 emailAddress,
-                UserEntity.Type.CUSTOMER.getType(),
+                UserEntity.Type.USER.getType(),
                 UserEntity.SubType.NA.getSubType(),
                 List.of(UserEntity.Status.SUCCESS.getStatus())
         );
         if (null != userEntity) {
             log.info("User already exist emailAddress={}, type={}, subType={}, status={}",
                     emailAddress,
-                    UserEntity.Type.CUSTOMER.getType(),
+                    UserEntity.Type.USER.getType(),
                     UserEntity.SubType.NA.getSubType(),
                     List.of(UserEntity.Status.SUCCESS.getStatus())
             );
