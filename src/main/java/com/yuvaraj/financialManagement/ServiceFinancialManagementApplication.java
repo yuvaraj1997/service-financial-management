@@ -1,7 +1,7 @@
 package com.yuvaraj.financialManagement;
 
 import com.yuvaraj.financialManagement.repositories.AuthorityRepository;
-import com.yuvaraj.financialManagement.repositories.CustomerRepository;
+import com.yuvaraj.financialManagement.repositories.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -17,22 +17,22 @@ public class ServiceFinancialManagementApplication {
     }
 
     @Bean
-    CommandLineRunner run(AuthorityRepository authorityRepository, CustomerRepository customerRepository) {
+    CommandLineRunner run(AuthorityRepository authorityRepository, UserRepository userRepository) {
         return args -> {
 //			authorityRepository.save(new AuthorityEntity(null, "test", "test", null, null));
 //			authorityRepository.save(new AuthorityEntity(null, "Customer", "ROLE_CUSTOMER", null, null));
 //			authorityRepository.save(new AuthorityEntity(null, "Merchant", "ROLE_MERCHANT", null, null));
 //			AuthorityEntity authorityEntity = authorityRepository.getById(AuthorityEntity.Role.ROLE_CUSTOMER.getId());
-//			CustomerEntity customerEntity = customerRepository.save(new CustomerEntity(
-//					null, CustomerEntity.Type.CUSTOMER.getType(), CustomerEntity.SubType.NA.getSubType(),
-//					"Admin", "Admin", "admin2@gmail.com", "60123531234", null, null, authorityEntity, CustomerEntity.Status.SUCCESS.getStatus(), null, null
+//			UserEntity userEntity = customerRepository.save(new UserEntity(
+//					null, UserEntity.Type.CUSTOMER.getType(), UserEntity.SubType.NA.getSubType(),
+//					"Admin", "Admin", "admin2@gmail.com", "60123531234", null, null, authorityEntity, UserEntity.Status.SUCCESS.getStatus(), null, null
 //			));
-//			customerEntity = customerRepository.findByEmailAndStatus("admin@gmail.com", CustomerEntity.Status.SUCCESS.getStatus());
-//			CustomerEntity customerEntity = customerRepository.findByEmailTypeSubtypeAndStatuses(
+//			userEntity = customerRepository.findByEmailAndStatus("admin@gmail.com", UserEntity.Status.SUCCESS.getStatus());
+//			UserEntity userEntity = customerRepository.findByEmailTypeSubtypeAndStatuses(
 //					"admin@gmail.com",
-//					CustomerEntity.Type.CUSTOMER.getType(),
-//					CustomerEntity.SubType.NA.getSubType(),
-//					Arrays.asList(CustomerEntity.Status.INITIATED.getStatus())
+//					UserEntity.Type.CUSTOMER.getType(),
+//					UserEntity.SubType.NA.getSubType(),
+//					Arrays.asList(UserEntity.Status.INITIATED.getStatus())
 //			);
         };
     }

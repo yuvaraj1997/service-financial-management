@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public class CustomerNotFoundException extends Exception {
+public class UserNotFoundException extends Exception {
 
     private final String errorMessage;
     private final ErrorCode errorCode;

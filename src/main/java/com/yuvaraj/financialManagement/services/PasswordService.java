@@ -1,6 +1,6 @@
 package com.yuvaraj.financialManagement.services;
 
-import com.yuvaraj.financialManagement.models.db.CustomerEntity;
+import com.yuvaraj.financialManagement.models.db.UserEntity;
 import com.yuvaraj.financialManagement.models.db.PasswordEntity;
 
 /**
@@ -16,8 +16,8 @@ public interface PasswordService {
 
 
     /**
-     * @param customerEntity Object request
+     * @param userEntity Object request
      * @return PasswordEntity
      */
-    PasswordEntity getByCustomerEntity(CustomerEntity customerEntity);
+    PasswordEntity getByCustomerEntity(UserEntity userEntity);
 }

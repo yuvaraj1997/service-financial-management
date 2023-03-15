@@ -2,7 +2,7 @@ package com.yuvaraj.financialManagement.controllers.v1;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yuvaraj.financialManagement.exceptions.InvalidArgumentException;
-import com.yuvaraj.financialManagement.exceptions.signup.CustomerAlreadyExistException;
+import com.yuvaraj.financialManagement.exceptions.signup.UserAlreadyExistException;
 import com.yuvaraj.financialManagement.exceptions.verification.VerificationCodeExpiredException;
 import com.yuvaraj.financialManagement.exceptions.verification.VerificationCodeMaxLimitReachedException;
 import com.yuvaraj.financialManagement.exceptions.verification.VerificationCodeResendNotAllowedException;
@@ -39,7 +39,7 @@ public class ForgotPasswordController {
     ForgotPasswordService forgotPasswordService;
 
     @PostMapping(path = "", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity postForgotPassword(@Valid @RequestBody PostForgotPasswordRequest postForgotPasswordRequest, HttpServletRequest httpServletRequest) throws CustomerAlreadyExistException, VerificationCodeMaxLimitReachedException, VerificationCodeResendNotAllowedException, InvalidAlgorithmParameterException, NoSuchPaddingException, UnsupportedEncodingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+    public ResponseEntity postForgotPassword(@Valid @RequestBody PostForgotPasswordRequest postForgotPasswordRequest, HttpServletRequest httpServletRequest) throws UserAlreadyExistException, VerificationCodeMaxLimitReachedException, VerificationCodeResendNotAllowedException, InvalidAlgorithmParameterException, NoSuchPaddingException, UnsupportedEncodingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
         String logMessage = String.format("%s %s", httpServletRequest.getMethod(), httpServletRequest.getRequestURI());
         log.info("Initiate to process {}, request={}", logMessage, new ObjectMapper().valueToTree(postForgotPasswordRequest));
         forgotPasswordService.processPostForgotPassword(postForgotPasswordRequest);
@@ -48,7 +48,7 @@ public class ForgotPasswordController {
     }
 
     @PostMapping(path = "/password", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity postForgotPasswordUpsert(@Valid @RequestBody PostForgotPasswordUpsertRequest postForgotPasswordUpsertRequest, HttpServletRequest httpServletRequest) throws CustomerAlreadyExistException, VerificationCodeMaxLimitReachedException, VerificationCodeResendNotAllowedException, InvalidArgumentException, VerificationCodeExpiredException {
+    public ResponseEntity postForgotPasswordUpsert(@Valid @RequestBody PostForgotPasswordUpsertRequest postForgotPasswordUpsertRequest, HttpServletRequest httpServletRequest) throws UserAlreadyExistException, VerificationCodeMaxLimitReachedException, VerificationCodeResendNotAllowedException, InvalidArgumentException, VerificationCodeExpiredException {
         //TODO: Remove password from logging
         String logMessage = String.format("%s %s", httpServletRequest.getMethod(), httpServletRequest.getRequestURI());
         log.info("Initiate to process {}, request={}", logMessage, new ObjectMapper().valueToTree(postForgotPasswordUpsertRequest));

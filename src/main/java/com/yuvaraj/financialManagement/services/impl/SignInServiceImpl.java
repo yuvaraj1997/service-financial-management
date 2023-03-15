@@ -5,13 +5,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Preconditions;
 import com.yuvaraj.financialManagement.exceptions.signIn.SignInMaxSessionReachedException;
 import com.yuvaraj.financialManagement.helpers.ErrorCode;
-import com.yuvaraj.financialManagement.models.db.CustomerEntity;
+import com.yuvaraj.financialManagement.models.db.UserEntity;
 import com.yuvaraj.financialManagement.models.db.PasswordEntity;
 import com.yuvaraj.financialManagement.models.db.SignInEntity;
 import com.yuvaraj.financialManagement.models.inbuiltClass.CustomUser;
 import com.yuvaraj.financialManagement.models.signIn.SignInRequest;
 import com.yuvaraj.financialManagement.repositories.SignInRepository;
-import com.yuvaraj.financialManagement.services.CustomerService;
+import com.yuvaraj.financialManagement.services.UserService;
 import com.yuvaraj.financialManagement.services.PasswordService;
 import com.yuvaraj.financialManagement.services.SignInService;
 import com.yuvaraj.security.helpers.DateHelper;
@@ -51,7 +51,7 @@ import static com.yuvaraj.financialManagement.models.db.SignInEntity.Status.FORC
 public class SignInServiceImpl implements SignInService, UserDetailsService {
 
     private final SignInRepository signInRepository;
-    private final CustomerService customerService;
+    private final UserService userService;
     private final PasswordService passwordService;
     private final TokenValidationService tokenValidationService;
     private final JwtManagerService jwtManagerService;
@@ -67,22 +67,22 @@ public class SignInServiceImpl implements SignInService, UserDetailsService {
         }
         String email = signInRequest.getEmailAddress();
         log.info("[{}]: Load User By Username: Attempting to login", email);
-        CustomerEntity customerEntity = customerService.findByEmail(email);
-        if (null == customerEntity) {
+        UserEntity userEntity = userService.findByEmail(email);
+        if (null == userEntity) {
             log.info("[{}]:Load User By Username: Customer Not Found", email);
             throw new UsernameNotFoundException("Customer not found");
         }
-        if (customerEntity.getStatus().equals(CustomerEntity.Status.SUCCESS.getStatus())) {
-            PasswordEntity passwordEntity = passwordService.getByCustomerEntity(customerEntity);
+        if (userEntity.getStatus().equals(UserEntity.Status.SUCCESS.getStatus())) {
+            PasswordEntity passwordEntity = passwordService.getByCustomerEntity(userEntity);
             Preconditions.checkNotNull(passwordEntity, "Password table not found = " + email);
             Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
-            authorities.add(new SimpleGrantedAuthority(customerEntity.getAuthorityEntity().getRole()));
+            authorities.add(new SimpleGrantedAuthority(userEntity.getAuthorityEntity().getRole()));
             log.info("[{}]:Load User By Username: Success", email);
             //TODO: Inbuilt User got many implementations please try to take advantage of that
-            return new CustomUser(signInRequest, customerEntity.getId(), customerEntity.getEmail(), passwordEntity.getPassword(), authorities);
+            return new CustomUser(signInRequest, userEntity.getId(), userEntity.getEmail(), passwordEntity.getPassword(), authorities);
         }
         //TODO: Handle properly
-        log.info("[{}]:Load User By Username: Customer is not in {} status, userCurrentStatus={}", email, CustomerEntity.Status.SUCCESS.getStatus(), customerEntity.getStatus());
+        log.info("[{}]:Load User By Username: Customer is not in {} status, userCurrentStatus={}", email, UserEntity.Status.SUCCESS.getStatus(), userEntity.getStatus());
         throw new UsernameNotFoundException(" Customer is not in allowed status");
     }
 
@@ -99,10 +99,10 @@ public class SignInServiceImpl implements SignInService, UserDetailsService {
         Preconditions.checkArgument(null != refreshToken.getCustomerId() && !refreshToken.getCustomerId().isEmpty(), "Validate Refresh Token: customerId cannot be null or empty in the token");
         Preconditions.checkArgument(refreshToken.getCustomerId().equals(customerId), "Validate Refresh Token: requested and token customerId in the token not tally");
         //TODO: Upsert refresh token tab
-        CustomerEntity customerEntity = customerService.findById(refreshToken.getCustomerId());
-        Preconditions.checkNotNull(customerEntity, "customer entity is null cannot find = " + refreshToken.getCustomerId());
-        if (customerEntity.getStatus().equals(CustomerEntity.Status.SUCCESS.getStatus())) {
-            checkIfRefreshTokenCreatedDateSyncWithOurSignInTab(customerEntity, defaultToken.getCreateTime());
+        UserEntity userEntity = userService.findById(refreshToken.getCustomerId());
+        Preconditions.checkNotNull(userEntity, "customer entity is null cannot find = " + refreshToken.getCustomerId());
+        if (userEntity.getStatus().equals(UserEntity.Status.SUCCESS.getStatus())) {
+            checkIfRefreshTokenCreatedDateSyncWithOurSignInTab(userEntity, defaultToken.getCreateTime());
             return;
         }
         //TODO: Handle proepr error
@@ -110,21 +110,21 @@ public class SignInServiceImpl implements SignInService, UserDetailsService {
 
     }
 
-    private void checkIfRefreshTokenCreatedDateSyncWithOurSignInTab(CustomerEntity customerEntity, long createTime) throws AccessDeniedException {
-        Page<SignInEntity> signInEntityPage = findLatestSignInData(customerEntity, SignInEntity.Status.ACTIVE.getStatus(), PageRequest.of(0, 5, Sort.by(Sort.Direction.DESC, "createdDate")));
+    private void checkIfRefreshTokenCreatedDateSyncWithOurSignInTab(UserEntity userEntity, long createTime) throws AccessDeniedException {
+        Page<SignInEntity> signInEntityPage = findLatestSignInData(userEntity, SignInEntity.Status.ACTIVE.getStatus(), PageRequest.of(0, 5, Sort.by(Sort.Direction.DESC, "createdDate")));
         if (null == signInEntityPage || signInEntityPage.getContent().isEmpty()) {
             //TODO: Handle proepr error
-            log.error("[{}]: Sign in tab is empty", customerEntity.getId());
+            log.error("[{}]: Sign in tab is empty", userEntity.getId());
             throw new AccessDeniedException("Sign in tab is empty");
         }
         for (SignInEntity signInEntity : signInEntityPage.getContent()) {
             if (createTime == signInEntity.getRefreshTokenGenerationTime() && signInEntity.getStatus().equals(SignInEntity.Status.ACTIVE.getStatus())) {
-                log.info("[{}]: Yay! Found identical refresh token generation time with refresh token that provided.", customerEntity.getId());
+                log.info("[{}]: Yay! Found identical refresh token generation time with refresh token that provided.", userEntity.getId());
                 return;
             }
         }
         //TODO: Handle proepr error
-        log.error("[{}]: Ohho! Refresh token generation time is not tally with out sign in tab. So we proceeding to throw exception", customerEntity.getId());
+        log.error("[{}]: Ohho! Refresh token generation time is not tally with out sign in tab. So we proceeding to throw exception", userEntity.getId());
         throw new AccessDeniedException("Ohho! Refresh token generation time is not tally with out sign in tab");
     }
 
@@ -146,24 +146,24 @@ public class SignInServiceImpl implements SignInService, UserDetailsService {
     @Override
     public void handleSignInData(CustomUser user, AuthSuccessfulResponse authSuccessfulResponse, SignInRequest signInRequest) throws SignInMaxSessionReachedException {
         log.info("[{}]: Handling Sign In Data request={}", user.getCustomerId(), JsonHelper.toJson(user));
-        CustomerEntity customerEntity = customerService.findById(user.getCustomerId());
-        if (null == customerEntity) {
+        UserEntity userEntity = userService.findById(user.getCustomerId());
+        if (null == userEntity) {
             log.info("[{}]:Handling Sign In Data: Customer Not Found", user.getCustomerId());
             throw new UsernameNotFoundException("Customer not found");
         }
-        if (customerEntity.getStatus().equals(CustomerEntity.Status.SUCCESS.getStatus())) {
-            validateIfSignInSessionMaxReached(customerEntity, signInRequest);
-            insertSignInRecord(customerEntity, authSuccessfulResponse.getGenerationTimestamp(), signInRequest);
+        if (userEntity.getStatus().equals(UserEntity.Status.SUCCESS.getStatus())) {
+            validateIfSignInSessionMaxReached(userEntity, signInRequest);
+            insertSignInRecord(userEntity, authSuccessfulResponse.getGenerationTimestamp(), signInRequest);
             return;
         }
         //TODO: Handle properly
-        log.info("[{}]:Load User By Username: Customer is not in {} status, userCurrentStatus={}", user.getCustomerId(), CustomerEntity.Status.SUCCESS.getStatus(), customerEntity.getStatus());
+        log.info("[{}]:Load User By Username: Customer is not in {} status, userCurrentStatus={}", user.getCustomerId(), UserEntity.Status.SUCCESS.getStatus(), userEntity.getStatus());
         throw new UsernameNotFoundException(" Customer is not in allowed status");
     }
 
-    private void insertSignInRecord(CustomerEntity customerEntity, long generationTimeStamp, SignInRequest signInRequest) {
+    private void insertSignInRecord(UserEntity userEntity, long generationTimeStamp, SignInRequest signInRequest) {
         SignInEntity signInEntity = new SignInEntity();
-        signInEntity.setCustomerEntity(customerEntity);
+        signInEntity.setUserEntity(userEntity);
         signInEntity.setRefreshTokenGenerationTime(generationTimeStamp);
         signInEntity.setDeviceName(signInRequest.getDeviceName());
         signInEntity.setDeviceType(signInRequest.getDeviceType());
@@ -174,27 +174,27 @@ public class SignInServiceImpl implements SignInService, UserDetailsService {
         save(signInEntity);
     }
 
-    private void validateIfSignInSessionMaxReached(CustomerEntity customerEntity, SignInRequest signInRequest) throws SignInMaxSessionReachedException {
-        log.info("[{}]: Validate if sign in session max reached", customerEntity.getId());
-        Page<SignInEntity> signInEntityPage = findLatestSignInData(customerEntity, SignInEntity.Status.ACTIVE.getStatus(), PageRequest.of(0, 5, Sort.by(Sort.Direction.DESC, "createdDate")));
+    private void validateIfSignInSessionMaxReached(UserEntity userEntity, SignInRequest signInRequest) throws SignInMaxSessionReachedException {
+        log.info("[{}]: Validate if sign in session max reached", userEntity.getId());
+        Page<SignInEntity> signInEntityPage = findLatestSignInData(userEntity, SignInEntity.Status.ACTIVE.getStatus(), PageRequest.of(0, 5, Sort.by(Sort.Direction.DESC, "createdDate")));
         if (null == signInEntityPage || signInEntityPage.getContent().isEmpty()) {
-            log.info("[{}]: User sign in is empty or not yet reach max so it's good to go", customerEntity.getId());
+            log.info("[{}]: User sign in is empty or not yet reach max so it's good to go", userEntity.getId());
             return;
         }
         for (SignInEntity signInEntity : signInEntityPage.getContent()) {
             if (signInEntity.getIpAddress().equals(signInRequest.getIpAddress())) {
                 signInEntity.setStatus(FORCED_SIGN_OUT.getStatus());
                 update(signInEntity);
-                log.info("[{}]: Existing ip address found in sign in so we are {} it.", signInEntity.getStatus(), customerEntity.getId());
+                log.info("[{}]: Existing ip address found in sign in so we are {} it.", signInEntity.getStatus(), userEntity.getId());
                 return;
             }
         }
         if (signInEntityPage.getContent().size() != SignInEntity.MAX_SIGN_SESSION) {
-            log.info("[{}]: User sign in is empty or not yet reach max so it's good to go", customerEntity.getId());
+            log.info("[{}]: User sign in is empty or not yet reach max so it's good to go", userEntity.getId());
             return;
         }
         //TODO: error handling
-        log.info("[{}]: User sign reached the max number of session={}", customerEntity.getId(), SignInEntity.MAX_SIGN_SESSION);
+        log.info("[{}]: User sign reached the max number of session={}", userEntity.getId(), SignInEntity.MAX_SIGN_SESSION);
         throw new SignInMaxSessionReachedException("Max Number of session reached", new ArrayList<>(), ErrorCode.MAX_NUMBER_OF_SESSION_REACHED);
     }
 
@@ -206,7 +206,7 @@ public class SignInServiceImpl implements SignInService, UserDetailsService {
         return signInRepository.save(signInEntity);
     }
 
-    private Page<SignInEntity> findLatestSignInData(CustomerEntity customerEntity, String status, PageRequest createdDate) {
-        return signInRepository.findLatestSignInData(customerEntity, status, createdDate);
+    private Page<SignInEntity> findLatestSignInData(UserEntity userEntity, String status, PageRequest createdDate) {
+        return signInRepository.findLatestSignInData(userEntity, status, createdDate);
     }
 }

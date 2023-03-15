@@ -1,10 +1,10 @@
 package com.yuvaraj.financialManagement.services.impl;
 
 import com.google.common.base.Preconditions;
-import com.yuvaraj.financialManagement.models.db.CustomerEntity;
+import com.yuvaraj.financialManagement.models.db.UserEntity;
 import com.yuvaraj.financialManagement.models.db.PasswordEntity;
 import com.yuvaraj.financialManagement.repositories.PasswordRepository;
-import com.yuvaraj.financialManagement.services.CustomerService;
+import com.yuvaraj.financialManagement.services.UserService;
 import com.yuvaraj.financialManagement.services.PasswordService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,15 +19,15 @@ import javax.transaction.Transactional;
 public class PasswordServiceImpl implements PasswordService {
 
     private final PasswordRepository passwordRepository;
-    private final CustomerService customerService;
+    private final UserService userService;
 
     @Override
     public void upsertPassword(String password, String customerId) {
         Preconditions.checkNotNull(password, "password cannot be null");
         Preconditions.checkNotNull(password, "customerId cannot be null");
-        CustomerEntity customerEntity = customerService.findById(customerId);
-        Preconditions.checkNotNull(customerEntity, "customerEntity could not be found customerId = " + customerId);
-        PasswordEntity passwordEntity = getByCustomerEntity(customerEntity);
+        UserEntity userEntity = userService.findById(customerId);
+        Preconditions.checkNotNull(userEntity, "userEntity could not be found customerId = " + customerId);
+        PasswordEntity passwordEntity = getByCustomerEntity(userEntity);
         if (null != passwordEntity) {
             passwordEntity.setPassword(password);
             passwordRepository.save(passwordEntity);
@@ -35,13 +35,13 @@ public class PasswordServiceImpl implements PasswordService {
         }
         passwordEntity = new PasswordEntity();
         passwordEntity.setPassword(password);
-        passwordEntity.setCustomerEntity(customerEntity);
+        passwordEntity.setUserEntity(userEntity);
         passwordEntity.setStatus(PasswordEntity.Status.ACTIVE.getStatus());
         passwordRepository.save(passwordEntity);
     }
 
     @Override
-    public PasswordEntity getByCustomerEntity(CustomerEntity customerEntity) {
-        return passwordRepository.findByCustomerEntity(customerEntity);
+    public PasswordEntity getByCustomerEntity(UserEntity userEntity) {
+        return passwordRepository.findByCustomerEntity(userEntity);
     }
 }

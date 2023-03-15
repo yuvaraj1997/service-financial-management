@@ -30,8 +30,8 @@ public class SignInEntity implements Serializable {
     private String id;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "sit_customer_id", referencedColumnName = "ct_id")
-    private CustomerEntity customerEntity;
+    @JoinColumn(name = "sit_customer_id", referencedColumnName = "ut_id")
+    private UserEntity userEntity;
 
     @Column(name = "sit_refresh_token_generation_time", nullable = false)
     private long refreshTokenGenerationTime;

@@ -7,9 +7,9 @@ import com.yuvaraj.financialManagement.exceptions.verification.VerificationCodeR
 import com.yuvaraj.financialManagement.helpers.ErrorCode;
 import com.yuvaraj.financialManagement.models.controllers.v1.forgotPassword.postForgotPassword.PostForgotPasswordRequest;
 import com.yuvaraj.financialManagement.models.controllers.v1.forgotPassword.postForgotPasswordUpsert.PostForgotPasswordUpsertRequest;
-import com.yuvaraj.financialManagement.models.db.CustomerEntity;
+import com.yuvaraj.financialManagement.models.db.UserEntity;
 import com.yuvaraj.financialManagement.models.db.VerificationCodeEntity;
-import com.yuvaraj.financialManagement.services.CustomerService;
+import com.yuvaraj.financialManagement.services.UserService;
 import com.yuvaraj.financialManagement.services.ForgotPasswordService;
 import com.yuvaraj.financialManagement.services.PasswordService;
 import com.yuvaraj.financialManagement.services.VerificationCodeService;
@@ -33,29 +33,29 @@ import java.util.List;
 @AllArgsConstructor
 public class ForgotPasswordServiceImpl implements ForgotPasswordService {
 
-    private final CustomerService customerService;
+    private final UserService userService;
     private final VerificationCodeService verificationCodeService;
     private final PasswordService passwordService;
     private final PasswordEncoder passwordEncoder;
 
     @Override
     public void processPostForgotPassword(PostForgotPasswordRequest postForgotPasswordRequest) throws InvalidAlgorithmParameterException, NoSuchPaddingException, UnsupportedEncodingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
-        CustomerEntity customerEntity = customerService.findByEmailTypeSubtypeAndStatuses(
+        UserEntity userEntity = userService.findByEmailTypeSubtypeAndStatuses(
                 postForgotPasswordRequest.getEmailAddress(),
-                CustomerEntity.Type.CUSTOMER.getType(),
-                CustomerEntity.SubType.NA.getSubType(),
-                List.of(CustomerEntity.Status.SUCCESS.getStatus())
+                UserEntity.Type.CUSTOMER.getType(),
+                UserEntity.SubType.NA.getSubType(),
+                List.of(UserEntity.Status.SUCCESS.getStatus())
         );
-        if (null == customerEntity) {
+        if (null == userEntity) {
             log.info("[{}]: Forgot Password: Customer not found or not in success state emailAddress={}, we will still return 200 to prevent any email leakage", postForgotPasswordRequest.getEmailAddress(), postForgotPasswordRequest.getEmailAddress());
             return;
         }
         try {
-            verificationCodeService.sendVerification(customerEntity.getId(), VerificationCodeEntity.Type.FORGOT_PASSWORD);
+            verificationCodeService.sendVerification(userEntity.getId(), VerificationCodeEntity.Type.FORGOT_PASSWORD);
         } catch (VerificationCodeMaxLimitReachedException e) {
-            log.info("[{}]: VerificationCodeMaxLimitReachedException: Forgot Password: Customer verification code max limit request reached, we will still return 200 to prevent any email leakage. emailAddress={}, customerId={}, infoMessage={}", postForgotPasswordRequest.getEmailAddress(), customerEntity.getEmail(), customerEntity.getId(), e.getErrorMessage());
+            log.info("[{}]: VerificationCodeMaxLimitReachedException: Forgot Password: Customer verification code max limit request reached, we will still return 200 to prevent any email leakage. emailAddress={}, customerId={}, infoMessage={}", postForgotPasswordRequest.getEmailAddress(), userEntity.getEmail(), userEntity.getId(), e.getErrorMessage());
         } catch (VerificationCodeResendNotAllowedException e) {
-            log.info("[{}]: VerificationCodeResendNotAllowedException: Forgot Password: Customer verification resend not allowed, we will still return 200 to prevent any email leakage. emailAddress={}, customerId={}, infoMessage={}", postForgotPasswordRequest.getEmailAddress(), customerEntity.getEmail(), customerEntity.getId(), e.getErrorMessage());
+            log.info("[{}]: VerificationCodeResendNotAllowedException: Forgot Password: Customer verification resend not allowed, we will still return 200 to prevent any email leakage. emailAddress={}, customerId={}, infoMessage={}", postForgotPasswordRequest.getEmailAddress(), userEntity.getEmail(), userEntity.getId(), e.getErrorMessage());
         }
     }
 
@@ -64,13 +64,13 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
     public void processPostForgotPasswordUpsert(PostForgotPasswordUpsertRequest postForgotPasswordUpsertRequest) throws InvalidArgumentException, VerificationCodeExpiredException {
         //TODO: Token decryption
         verificationCodeService.isVerificationIdIsValidToProceedVerification(postForgotPasswordUpsertRequest.getToken(), postForgotPasswordUpsertRequest.getCustomerId(), VerificationCodeEntity.Type.SIGN_UP_ACTIVATION);
-        CustomerEntity customerEntity = customerService.findById(postForgotPasswordUpsertRequest.getCustomerId());
-        if (null == customerEntity) {
+        UserEntity userEntity = userService.findById(postForgotPasswordUpsertRequest.getCustomerId());
+        if (null == userEntity) {
             log.error("[{}]: Process Post Forgot Password Upsert: Customer Not Found.", postForgotPasswordUpsertRequest.getCustomerId());
             throw new InvalidArgumentException("Customer Not Found", ErrorCode.INVALID_ARGUMENT);
         }
-        if (!customerEntity.getStatus().equals(CustomerEntity.Status.SUCCESS.getStatus())) {
-            log.error("[{}]:  Process Post Forgot Password Upsert: Customer status is not satisfy. customerId={}, status={}", customerEntity.getId(), customerEntity.getId(), customerEntity.getStatus());
+        if (!userEntity.getStatus().equals(UserEntity.Status.SUCCESS.getStatus())) {
+            log.error("[{}]:  Process Post Forgot Password Upsert: Customer status is not satisfy. customerId={}, status={}", userEntity.getId(), userEntity.getId(), userEntity.getStatus());
             throw new InvalidArgumentException("Customer status is not satisfy.", ErrorCode.INVALID_ARGUMENT);
         }
         passwordService.upsertPassword(passwordEncoder.encode(postForgotPasswordUpsertRequest.getPassword()), postForgotPasswordUpsertRequest.getCustomerId());

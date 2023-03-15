@@ -1,8 +1,8 @@
 package com.yuvaraj.financialManagement.configuration;
 
-import com.yuvaraj.financialManagement.exceptions.CustomerNotFoundException;
+import com.yuvaraj.financialManagement.exceptions.UserNotFoundException;
 import com.yuvaraj.financialManagement.exceptions.InvalidArgumentException;
-import com.yuvaraj.financialManagement.exceptions.signup.CustomerAlreadyExistException;
+import com.yuvaraj.financialManagement.exceptions.signup.UserAlreadyExistException;
 import com.yuvaraj.financialManagement.exceptions.verification.VerificationCodeExpiredException;
 import com.yuvaraj.financialManagement.exceptions.verification.VerificationCodeMaxLimitReachedException;
 import com.yuvaraj.financialManagement.exceptions.verification.VerificationCodeResendNotAllowedException;
@@ -42,16 +42,16 @@ public class ExceptionHandlerConfiguration extends ResponseEntityExceptionHandle
         return handleExceptionInternal(ex, handleMethodArgumentNotValidException(HttpStatus.BAD_REQUEST.value(), ErrorCode.INVALID_ARGUMENT, ex), headers, status, request);
     }
 
-    @ExceptionHandler({CustomerNotFoundException.class})
-    public ResponseEntity<Object> customerNotFoundException(CustomerNotFoundException customerNotFoundException, WebRequest request) {
+    @ExceptionHandler({UserNotFoundException.class})
+    public ResponseEntity<Object> customerNotFoundException(UserNotFoundException userNotFoundException, WebRequest request) {
         HttpHeaders headers = new HttpHeaders();
-        return handleExceptionInternal(customerNotFoundException, handleGeneralException(HttpStatus.BAD_REQUEST.value(), customerNotFoundException.getErrorCode()), headers, HttpStatus.BAD_REQUEST, request);
+        return handleExceptionInternal(userNotFoundException, handleGeneralException(HttpStatus.BAD_REQUEST.value(), userNotFoundException.getErrorCode()), headers, HttpStatus.BAD_REQUEST, request);
     }
 
-    @ExceptionHandler({CustomerAlreadyExistException.class})
-    public ResponseEntity<Object> customerAlreadyExistException(CustomerAlreadyExistException customerAlreadyExistException, WebRequest request) {
+    @ExceptionHandler({UserAlreadyExistException.class})
+    public ResponseEntity<Object> customerAlreadyExistException(UserAlreadyExistException userAlreadyExistException, WebRequest request) {
         HttpHeaders headers = new HttpHeaders();
-        return handleExceptionInternal(customerAlreadyExistException, handleGeneralException(HttpStatus.BAD_REQUEST.value(), customerAlreadyExistException.getErrorCode()), headers, HttpStatus.BAD_REQUEST, request);
+        return handleExceptionInternal(userAlreadyExistException, handleGeneralException(HttpStatus.BAD_REQUEST.value(), userAlreadyExistException.getErrorCode()), headers, HttpStatus.BAD_REQUEST, request);
     }
 
     @ExceptionHandler({VerificationCodeMaxLimitReachedException.class})

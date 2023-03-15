@@ -9,8 +9,8 @@ public enum ErrorCode {
 
     INTERNAL_SERVER_ERROR(1000, "Internal Server Error"),
     INVALID_ARGUMENT(1004, "Invalid Argument"),
-    CUSTOMER_NOT_FOUND(2000, "Customer Not Found"),
-    CUSTOMER_ALREADY_EXIST(2001, "Customer already exist."),
+    USER_NOT_FOUND(2000, "User Not Found"),
+    USER_ALREADY_EXIST(2001, "User already exist."),
     VERIFICATION_CODE_ALREADY_EXPIRED(3000, "Verification code already expired, please request again. Thank you."),
     VERIFICATION_CODE_REQUEST_LIMIT_REACH(3001, "Verification code request already reached max. Please retry again in 2 hours. Thank you. Please contact us support@support.com for any " +
             "enquiries."),

@@ -26,8 +26,8 @@ public class PasswordEntity implements Serializable {
     private Long id;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "pt_customer_id", referencedColumnName = "ct_id")
-    private CustomerEntity customerEntity;
+    @JoinColumn(name = "pt_customer_id", referencedColumnName = "ut_id")
+    private UserEntity userEntity;
 
     @Column(name = "pt_password", nullable = false)
     private String password;
