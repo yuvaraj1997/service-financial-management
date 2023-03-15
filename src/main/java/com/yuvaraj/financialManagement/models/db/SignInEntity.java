@@ -30,7 +30,7 @@ public class SignInEntity implements Serializable {
     private String id;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "sit_customer_id", referencedColumnName = "ut_id")
+    @JoinColumn(name = "sit_user_id", referencedColumnName = "ut_id")
     private UserEntity userEntity;
 
     @Column(name = "sit_refresh_token_generation_time", nullable = false)
@@ -72,6 +72,7 @@ public class SignInEntity implements Serializable {
     @AllArgsConstructor
     public enum Status {
         ACTIVE("ACTIVE"),
+        SIGN_OUT("SIGN_OUT"),
         FORCED_SIGN_OUT("FORCED_SIGN_OUT"),
         EXPIRED("EXPIRED");
 

@@ -78,4 +78,27 @@
                              columnNames="at_role"
                              constraintName="at_role_unique"/>
     </changeSet>
+    <changeSet id="202303151724" author="Yuvaraj">
+        <createTable tableName="sign_in_tab">
+            <column name="sit_id" type="varchar(255)">
+                <constraints primaryKey="true" primaryKeyName="sit_id_pk"/>
+            </column>
+            <column name="sit_user_id" type="varchar(255)"/>
+            <column name="sit_refresh_token_generation_time" type="int"/>
+            <column name="sit_device_name" type="varchar(255)"/>
+            <column name="sit_device_type" type="varchar(255)"/>
+            <column name="sit_device_subtype" type="varchar(255)"/>
+            <column name="sit_ip_address" type="varchar(45)"/>
+            <column name="sit_sign_in_date" type="DATETIME"/>
+            <column name="sit_sign_out_date" type="DATETIME"/>
+            <column name="sit_status" type="varchar(45)"/>
+            <column name="sit_record_create_date" type="DATETIME"/>
+            <column name="sit_record_update_date" type="DATETIME"/>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="sit_user_id"
+                                 baseTableName="sign_in_tab"
+                                 constraintName="fk_sign_in_user_id"
+                                 referencedColumnNames="ut_id"
+                                 referencedTableName="user_tab"/>
+    </changeSet>
 </databaseChangeLog>
