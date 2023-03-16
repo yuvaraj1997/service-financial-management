@@ -39,7 +39,7 @@ public class ForgotPasswordController {
     ForgotPasswordService forgotPasswordService;
 
     @PostMapping(path = "", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> postForgotPassword(@Valid @RequestBody PostForgotPasswordRequest postForgotPasswordRequest, HttpServletRequest httpServletRequest) throws UserAlreadyExistException, VerificationCodeMaxLimitReachedException, VerificationCodeResendNotAllowedException, InvalidAlgorithmParameterException, NoSuchPaddingException, UnsupportedEncodingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+    public ResponseEntity<Object> postForgotPassword(@Valid @RequestBody PostForgotPasswordRequest postForgotPasswordRequest, HttpServletRequest httpServletRequest) throws UserAlreadyExistException, VerificationCodeMaxLimitReachedException, VerificationCodeResendNotAllowedException {
         log.info("Initiate to process, request={}", new ObjectMapper().valueToTree(postForgotPasswordRequest));
         forgotPasswordService.processPostForgotPassword(postForgotPasswordRequest);
         log.info("Successfully processed");

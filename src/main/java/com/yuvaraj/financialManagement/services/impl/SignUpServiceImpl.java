@@ -20,14 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 import javax.transaction.Transactional;
-import java.io.UnsupportedEncodingException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 import static com.yuvaraj.financialManagement.helpers.DateHelpers.convertDateForEndResult;
@@ -47,7 +40,7 @@ public class SignUpServiceImpl implements SignUpService {
 
     @Override
     @Transactional(rollbackOn = Exception.class)
-    public PostSignUpResponse processPostSignUp(PostSignUpRequest postSignUpRequest) throws UserAlreadyExistException, VerificationCodeMaxLimitReachedException, VerificationCodeResendNotAllowedException, InvalidAlgorithmParameterException, NoSuchPaddingException, UnsupportedEncodingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+    public PostSignUpResponse processPostSignUp(PostSignUpRequest postSignUpRequest) throws UserAlreadyExistException, VerificationCodeMaxLimitReachedException, VerificationCodeResendNotAllowedException {
         checkIfUserAlreadyExist(null, postSignUpRequest.getEmailAddress());
         UserEntity userEntity = getAnyExistingRecordIfAvailable(postSignUpRequest.getEmailAddress());
         if (null != userEntity) {
@@ -62,8 +55,13 @@ public class SignUpServiceImpl implements SignUpService {
 
     @Override
     @Transactional(rollbackOn = Exception.class)
-    public void processPostResendVerification(PostResendVerificationRequest postResendVerificationRequest) throws UserAlreadyExistException, UserNotFoundException, VerificationCodeMaxLimitReachedException, VerificationCodeResendNotAllowedException, InvalidAlgorithmParameterException, NoSuchPaddingException, UnsupportedEncodingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
-        checkIfUserAlreadyExist(postResendVerificationRequest.getUserId(), null);
+    public void processPostResendVerification(PostResendVerificationRequest postResendVerificationRequest) throws UserNotFoundException, VerificationCodeMaxLimitReachedException, VerificationCodeResendNotAllowedException, InvalidArgumentException {
+        try {
+            checkIfUserAlreadyExist(postResendVerificationRequest.getUserId(), null);
+        } catch (UserAlreadyExistException e) {
+            log.info("User already exist. Not allowed to post resend verification. userId={}", postResendVerificationRequest.getUserId());
+            throw new InvalidArgumentException("User already exist", ErrorCode.INVALID_ARGUMENT);
+        }
         UserEntity userEntity = userService.findById(postResendVerificationRequest.getUserId());
         if (null == userEntity) {
             log.info("Customer not found to do resend verification userId={}", postResendVerificationRequest.getUserId());
@@ -75,17 +73,17 @@ public class SignUpServiceImpl implements SignUpService {
     @Override
     @Transactional(rollbackOn = Exception.class)
     public void processPostVerify(PostVerifyRequest postVerifyRequest) throws InvalidArgumentException, VerificationCodeExpiredException {
-        verificationCodeService.isVerificationIdIsValidToProceedVerification(postVerifyRequest.getToken(), postVerifyRequest.getUserId(), VerificationCodeEntity.Type.SIGN_UP_ACTIVATION);
+        verificationCodeService.isVerificationIdIsValidToProceedVerification(postVerifyRequest.getCode(), postVerifyRequest.getUserId(), VerificationCodeEntity.Type.SIGN_UP_ACTIVATION);
         UserEntity userEntity = userService.findById(postVerifyRequest.getUserId());
         if (null == userEntity) {
-            log.error("[{}]: Customer Not Found.", postVerifyRequest.getToken());
-            throw new InvalidArgumentException("Customer Not Found", ErrorCode.INVALID_ARGUMENT);
+            log.error("[{}]: User Not Found.", postVerifyRequest.getUserId());
+            throw new InvalidArgumentException("User Not Found", ErrorCode.INVALID_ARGUMENT);
         }
         if (!userEntity.getStatus().equals(UserEntity.Status.VERIFICATION_PENDING.getStatus())) {
-            log.error("[{}]: Customer status is not satisfy to verify. customerId={}, status={}", postVerifyRequest.getToken(), userEntity.getId(), userEntity.getStatus());
+            log.error("[{}]: User status is not satisfy to verify. status={}", postVerifyRequest.getUserId(), userEntity.getStatus());
             throw new InvalidArgumentException("Customer status is not satisfy to verify", ErrorCode.INVALID_ARGUMENT);
         }
-        verificationCodeService.markAsVerified(postVerifyRequest.getToken(), postVerifyRequest.getUserId());
+        verificationCodeService.markAsVerified(postVerifyRequest.getCode(), postVerifyRequest.getUserId());
         userEntity.setStatus(UserEntity.Status.ACTIVE.getStatus());
         userEntity.setCustomerCreatedDate(nowDate());
         userService.update(userEntity);
@@ -124,9 +122,9 @@ public class SignUpServiceImpl implements SignUpService {
 
     private void checkIfUserAlreadyExist(String userId, String emailAddress) throws UserAlreadyExistException {
         UserEntity userEntity = null;
-        if (null != userId && !userId.isEmpty()){
+        if (null != userId && !userId.isEmpty()) {
             userEntity = userService.findByIdAndStatus(userId, UserEntity.Status.ACTIVE.getStatus());
-        }else {
+        } else {
             userEntity = userService.findByEmailTypeSubtypeAndStatuses(
                     emailAddress,
                     UserEntity.Type.USER.getType(),

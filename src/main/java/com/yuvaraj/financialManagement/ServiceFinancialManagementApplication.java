@@ -1,8 +1,6 @@
 package com.yuvaraj.financialManagement;
 
 import com.yuvaraj.financialManagement.models.db.AuthorityEntity;
-import com.yuvaraj.financialManagement.models.db.PasswordEntity;
-import com.yuvaraj.financialManagement.models.db.UserEntity;
 import com.yuvaraj.financialManagement.repositories.AuthorityRepository;
 import com.yuvaraj.financialManagement.repositories.UserRepository;
 import lombok.extern.slf4j.Slf4j;

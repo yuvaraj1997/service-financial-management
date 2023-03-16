@@ -20,8 +20,7 @@ public class UriConverter extends ClassicConverter {
             if (requestAttributes instanceof ServletRequestAttributes) {
                 return ((ServletRequestAttributes) requestAttributes).getRequest().getRequestURI();
             }
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             log.debug(ex.getMessage());
         }
 

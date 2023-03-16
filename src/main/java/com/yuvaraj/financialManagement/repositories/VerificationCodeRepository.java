@@ -14,4 +14,7 @@ public interface VerificationCodeRepository extends JpaRepository<VerificationCo
 
     @Query(value = "SELECT vct FROM VerificationCodeEntity vct WHERE vct.id = ?1 and vct.identifier = ?2")
     VerificationCodeEntity findByIdAndIdentifier(String id, String identifier);
+
+    @Query(value = "SELECT vct FROM VerificationCodeEntity vct WHERE vct.code = ?1 and vct.identifier = ?2")
+    VerificationCodeEntity findByCodeAndIdentifier(String code, String identifier);
 }

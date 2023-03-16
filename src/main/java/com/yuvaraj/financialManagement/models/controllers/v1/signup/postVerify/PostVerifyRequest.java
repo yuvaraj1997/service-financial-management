@@ -15,9 +15,9 @@ import javax.validation.constraints.NotBlank;
 @Setter
 public class PostVerifyRequest {
 
-    @JsonProperty("token")
-    @NotBlank(message = "token is mandatory")
-    private String token;
+    @JsonProperty("code")
+    @NotBlank(message = "code is mandatory")
+    private String code;
 
     @JsonProperty("userId")
     @NotBlank(message = "userId is mandatory")

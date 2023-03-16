@@ -6,14 +6,6 @@ import com.yuvaraj.financialManagement.exceptions.verification.VerificationCodeM
 import com.yuvaraj.financialManagement.exceptions.verification.VerificationCodeResendNotAllowedException;
 import com.yuvaraj.financialManagement.models.db.VerificationCodeEntity;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import java.io.UnsupportedEncodingException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-
 /**
  *
  */
@@ -23,7 +15,7 @@ public interface VerificationCodeService {
      * @param identifier String request
      * @param type       VerificationCodeEntity.Type request
      */
-    void sendVerification(String identifier, VerificationCodeEntity.Type type) throws VerificationCodeMaxLimitReachedException, VerificationCodeResendNotAllowedException, InvalidAlgorithmParameterException, NoSuchPaddingException, UnsupportedEncodingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException;
+    void sendVerification(String identifier, VerificationCodeEntity.Type type) throws VerificationCodeMaxLimitReachedException, VerificationCodeResendNotAllowedException;
 
     /**
      * @param id String request

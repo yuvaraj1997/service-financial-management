@@ -39,7 +39,7 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public void processPostForgotPassword(PostForgotPasswordRequest postForgotPasswordRequest) throws InvalidAlgorithmParameterException, NoSuchPaddingException, UnsupportedEncodingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+    public void processPostForgotPassword(PostForgotPasswordRequest postForgotPasswordRequest){
         UserEntity userEntity = userService.findByEmailTypeSubtypeAndStatuses(
                 postForgotPasswordRequest.getEmailAddress(),
                 UserEntity.Type.USER.getType(),

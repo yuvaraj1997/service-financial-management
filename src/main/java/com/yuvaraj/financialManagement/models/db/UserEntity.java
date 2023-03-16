@@ -57,7 +57,7 @@ public class UserEntity implements Serializable {
     @JoinColumn(name = "ut_password_id", referencedColumnName = "pt_id")
     private PasswordEntity passwordEntity;
 
-    @OneToMany(mappedBy="userEntity")
+    @OneToMany(mappedBy = "userEntity")
     private Set<SignInEntity> signInEntities;
 
     @Column(name = "ut_status")

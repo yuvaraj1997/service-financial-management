@@ -21,7 +21,7 @@ public interface ForgotPasswordService {
     /**
      * @param postForgotPasswordRequest Object request
      */
-    void processPostForgotPassword(PostForgotPasswordRequest postForgotPasswordRequest) throws InvalidAlgorithmParameterException, NoSuchPaddingException, UnsupportedEncodingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException;
+    void processPostForgotPassword(PostForgotPasswordRequest postForgotPasswordRequest);
 
     /**
      * @param postForgotPasswordUpsertRequest Object request

@@ -7,9 +7,6 @@ import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.http.HttpServletRequest;
-
 /**
  * @author Yuvaraj
  */
@@ -23,8 +20,7 @@ public class HttpMethodConverter extends ClassicConverter {
             if (requestAttributes instanceof ServletRequestAttributes) {
                 return ((ServletRequestAttributes) requestAttributes).getRequest().getMethod();
             }
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             log.debug(ex.getMessage());
         }
 
