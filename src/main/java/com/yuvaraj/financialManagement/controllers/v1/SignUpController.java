@@ -43,32 +43,27 @@ public class SignUpController {
     SignUpService signUpService;
 
     @PostMapping(path = "", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity postSignUp(@Valid @RequestBody PostSignUpRequest postSignUpRequest, HttpServletRequest httpServletRequest) throws UserAlreadyExistException, VerificationCodeMaxLimitReachedException, VerificationCodeResendNotAllowedException, InvalidAlgorithmParameterException, NoSuchPaddingException, UnsupportedEncodingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
-        //todo: remove logging password
-        String logMessage = String.format("%s %s", httpServletRequest.getMethod(), httpServletRequest.getRequestURI());
-        log.info("Initiate to process {}, request={}", logMessage, new ObjectMapper().valueToTree(postSignUpRequest));
+    public ResponseEntity<Object> postSignUp(@Valid @RequestBody PostSignUpRequest postSignUpRequest) throws UserAlreadyExistException, VerificationCodeMaxLimitReachedException, VerificationCodeResendNotAllowedException, InvalidAlgorithmParameterException, NoSuchPaddingException, UnsupportedEncodingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+        log.info("Initiate to process, request={}", new ObjectMapper().valueToTree(postSignUpRequest));
         PostSignUpResponse postSignUpResponse = signUpService.processPostSignUp(postSignUpRequest);
-        log.info("Successfully processed {}, request={}, response={}", logMessage, new ObjectMapper().valueToTree(postSignUpRequest)
-                , new ObjectMapper().valueToTree(postSignUpResponse));
+        log.info("Successfully processed response={}", new ObjectMapper().valueToTree(postSignUpResponse));
         return ok(postSignUpResponse);
     }
 
 
     @PostMapping(path = "resend/verification", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity postResendVerification(@Valid @RequestBody PostResendVerificationRequest postResendVerificationRequest, HttpServletRequest httpServletRequest) throws UserAlreadyExistException, VerificationCodeMaxLimitReachedException, UserNotFoundException, VerificationCodeResendNotAllowedException, InvalidAlgorithmParameterException, NoSuchPaddingException, UnsupportedEncodingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
-        String logMessage = String.format("%s %s", httpServletRequest.getMethod(), httpServletRequest.getRequestURI());
-        log.info("Initiate to process {}, request={}", logMessage, new ObjectMapper().valueToTree(postResendVerificationRequest));
+    public ResponseEntity<Object> postResendVerification(@Valid @RequestBody PostResendVerificationRequest postResendVerificationRequest) throws UserAlreadyExistException, VerificationCodeMaxLimitReachedException, UserNotFoundException, VerificationCodeResendNotAllowedException, InvalidAlgorithmParameterException, NoSuchPaddingException, UnsupportedEncodingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+        log.info("Initiate to process, request={}", new ObjectMapper().valueToTree(postResendVerificationRequest));
         signUpService.processPostResendVerification(postResendVerificationRequest);
-        log.info("Successfully processed {}, request={}", logMessage, new ObjectMapper().valueToTree(postResendVerificationRequest));
+        log.info("Successfully processed response={}", new ObjectMapper().valueToTree(postResendVerificationRequest));
         return okAsJson();
     }
 
     @PostMapping(path = "verify", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity postVerify(@Valid @RequestBody PostVerifyRequest postVerifyRequest, HttpServletRequest httpServletRequest) throws UserAlreadyExistException, VerificationCodeMaxLimitReachedException, UserNotFoundException, VerificationCodeResendNotAllowedException, InvalidArgumentException, VerificationCodeExpiredException {
-        String logMessage = String.format("%s %s", httpServletRequest.getMethod(), httpServletRequest.getRequestURI());
-        log.info("Initiate to process {}, request={}", logMessage, new ObjectMapper().valueToTree(postVerifyRequest));
+    public ResponseEntity<Object> postVerify(@Valid @RequestBody PostVerifyRequest postVerifyRequest) throws UserAlreadyExistException, VerificationCodeMaxLimitReachedException, UserNotFoundException, VerificationCodeResendNotAllowedException, InvalidArgumentException, VerificationCodeExpiredException {
+        log.info("Initiate to process, request={}", new ObjectMapper().valueToTree(postVerifyRequest));
         signUpService.processPostVerify(postVerifyRequest);
-        log.info("Successfully processed {}, request={}", logMessage, new ObjectMapper().valueToTree(postVerifyRequest));
+        log.info("Successfully processed response={}", new ObjectMapper().valueToTree(postVerifyRequest));
         return okAsJson();
     }
 }

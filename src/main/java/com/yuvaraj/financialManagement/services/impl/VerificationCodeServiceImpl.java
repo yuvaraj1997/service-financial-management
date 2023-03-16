@@ -63,8 +63,9 @@ public class VerificationCodeServiceImpl implements VerificationCodeService {
         //TODO: Handle tokenization verification id and send user
         Preconditions.checkNotNull(identifier, "identifier cannot be null");
         Preconditions.checkNotNull(type, "type cannot be null");
-        int resendRetriesCount = 1;
         log.info("[{}]: Initiating send verification. identifier={}", identifier, identifier);
+
+        int resendRetriesCount = 1;
         VerificationCodeEntity verificationCodeEntity;
         Page<VerificationCodeEntity> verificationCodeEntityPage = verificationCodeRepository.findLatestByIdentifierAndType(identifier, type.getType(), PageRequest.of(0, 1, Sort.by(Sort.Direction.DESC, "createdDate")));
         if (null != verificationCodeEntityPage && !verificationCodeEntityPage.getContent().isEmpty()) {

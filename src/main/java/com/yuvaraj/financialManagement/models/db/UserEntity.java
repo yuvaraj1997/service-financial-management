@@ -11,6 +11,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Set;
 
 @Entity(name = "UserEntity")
 @Table(name = "user_tab")
@@ -56,6 +57,9 @@ public class UserEntity implements Serializable {
     @JoinColumn(name = "ut_password_id", referencedColumnName = "pt_id")
     private PasswordEntity passwordEntity;
 
+    @OneToMany(mappedBy="userEntity")
+    private Set<SignInEntity> signInEntities;
+
     @Column(name = "ut_status")
     private String status;
 
@@ -90,7 +94,7 @@ public class UserEntity implements Serializable {
     @AllArgsConstructor
     public enum Status {
         VERIFICATION_PENDING("VERIFICATION_PENDING"),
-        SUCCESS("SUCCESS");
+        ACTIVE("ACTIVE");
 
         private final String status;
     }

@@ -80,11 +80,11 @@ public class ResponseHelper {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST.value()).body(response);
     }
 
-    public static ResponseEntity ok(Object object) {
+    public static ResponseEntity<Object> ok(Object object) {
         return ResponseEntity.status(HttpStatus.OK.value()).body(object);
     }
 
-    public static ResponseEntity okAsJson() {
+    public static ResponseEntity<Object> okAsJson() {
         return ResponseEntity.status(HttpStatus.OK.value()).body(getStatusNodeMapping(HttpStatus.OK.value()));
     }
 }

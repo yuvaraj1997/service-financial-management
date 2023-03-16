@@ -72,7 +72,7 @@ public class SignInServiceImpl implements SignInService, UserDetailsService {
             log.info("[{}]:Load User By Username: Customer Not Found", email);
             throw new UsernameNotFoundException("Customer not found");
         }
-        if (userEntity.getStatus().equals(UserEntity.Status.SUCCESS.getStatus())) {
+        if (userEntity.getStatus().equals(UserEntity.Status.ACTIVE.getStatus())) {
             PasswordEntity passwordEntity = passwordService.getByCustomerEntity(userEntity);
             Preconditions.checkNotNull(passwordEntity, "Password table not found = " + email);
             Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
@@ -82,7 +82,7 @@ public class SignInServiceImpl implements SignInService, UserDetailsService {
             return new CustomUser(signInRequest, userEntity.getId(), userEntity.getEmail(), passwordEntity.getPassword(), authorities);
         }
         //TODO: Handle properly
-        log.info("[{}]:Load User By Username: Customer is not in {} status, userCurrentStatus={}", email, UserEntity.Status.SUCCESS.getStatus(), userEntity.getStatus());
+        log.info("[{}]:Load User By Username: Customer is not in {} status, userCurrentStatus={}", email, UserEntity.Status.ACTIVE.getStatus(), userEntity.getStatus());
         throw new UsernameNotFoundException(" Customer is not in allowed status");
     }
 
@@ -101,7 +101,7 @@ public class SignInServiceImpl implements SignInService, UserDetailsService {
         //TODO: Upsert refresh token tab
         UserEntity userEntity = userService.findById(refreshToken.getCustomerId());
         Preconditions.checkNotNull(userEntity, "customer entity is null cannot find = " + refreshToken.getCustomerId());
-        if (userEntity.getStatus().equals(UserEntity.Status.SUCCESS.getStatus())) {
+        if (userEntity.getStatus().equals(UserEntity.Status.ACTIVE.getStatus())) {
             checkIfRefreshTokenCreatedDateSyncWithOurSignInTab(userEntity, defaultToken.getCreateTime());
             return;
         }
@@ -151,13 +151,13 @@ public class SignInServiceImpl implements SignInService, UserDetailsService {
             log.info("[{}]:Handling Sign In Data: Customer Not Found", user.getCustomerId());
             throw new UsernameNotFoundException("Customer not found");
         }
-        if (userEntity.getStatus().equals(UserEntity.Status.SUCCESS.getStatus())) {
+        if (userEntity.getStatus().equals(UserEntity.Status.ACTIVE.getStatus())) {
             validateIfSignInSessionMaxReached(userEntity, signInRequest);
             insertSignInRecord(userEntity, authSuccessfulResponse.getGenerationTimestamp(), signInRequest);
             return;
         }
         //TODO: Handle properly
-        log.info("[{}]:Load User By Username: Customer is not in {} status, userCurrentStatus={}", user.getCustomerId(), UserEntity.Status.SUCCESS.getStatus(), userEntity.getStatus());
+        log.info("[{}]:Load User By Username: Customer is not in {} status, userCurrentStatus={}", user.getCustomerId(), UserEntity.Status.ACTIVE.getStatus(), userEntity.getStatus());
         throw new UsernameNotFoundException(" Customer is not in allowed status");
     }
 

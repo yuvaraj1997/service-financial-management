@@ -44,7 +44,7 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
                 postForgotPasswordRequest.getEmailAddress(),
                 UserEntity.Type.USER.getType(),
                 UserEntity.SubType.NA.getSubType(),
-                List.of(UserEntity.Status.SUCCESS.getStatus())
+                List.of(UserEntity.Status.ACTIVE.getStatus())
         );
         if (null == userEntity) {
             log.info("[{}]: Forgot Password: Customer not found or not in success state emailAddress={}, we will still return 200 to prevent any email leakage", postForgotPasswordRequest.getEmailAddress(), postForgotPasswordRequest.getEmailAddress());
@@ -69,7 +69,7 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
             log.error("[{}]: Process Post Forgot Password Upsert: Customer Not Found.", postForgotPasswordUpsertRequest.getCustomerId());
             throw new InvalidArgumentException("Customer Not Found", ErrorCode.INVALID_ARGUMENT);
         }
-        if (!userEntity.getStatus().equals(UserEntity.Status.SUCCESS.getStatus())) {
+        if (!userEntity.getStatus().equals(UserEntity.Status.ACTIVE.getStatus())) {
             log.error("[{}]:  Process Post Forgot Password Upsert: Customer status is not satisfy. customerId={}, status={}", userEntity.getId(), userEntity.getId(), userEntity.getStatus());
             throw new InvalidArgumentException("Customer status is not satisfy.", ErrorCode.INVALID_ARGUMENT);
         }

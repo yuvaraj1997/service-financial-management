@@ -51,12 +51,12 @@ public class SignUpServiceImpl implements SignUpService {
         checkIfUserAlreadyExist(postSignUpRequest.getEmailAddress());
         UserEntity userEntity = getAnyExistingRecordIfAvailable(postSignUpRequest.getEmailAddress());
         if (null != userEntity) {
-            return buildPostSignUpResponse(userEntity, true);
+            return buildPostSignUpResponse(userEntity);
         }
-        userEntity = createCustomerRecord(postSignUpRequest);
+        userEntity = createUserRecord(postSignUpRequest);
         passwordService.upsertPassword(passwordEncoder.encode(postSignUpRequest.getPassword()), userEntity.getId());
         verificationCodeService.sendVerification(userEntity.getId(), VerificationCodeEntity.Type.SIGN_UP_ACTIVATION);
-        return buildPostSignUpResponse(userEntity, false);
+        return buildPostSignUpResponse(userEntity);
     }
 
     @Override
@@ -85,12 +85,12 @@ public class SignUpServiceImpl implements SignUpService {
             throw new InvalidArgumentException("Customer status is not satisfy to verify", ErrorCode.INVALID_ARGUMENT);
         }
         verificationCodeService.markAsVerified(postVerifyRequest.getToken(), postVerifyRequest.getCustomerId());
-        userEntity.setStatus(UserEntity.Status.SUCCESS.getStatus());
+        userEntity.setStatus(UserEntity.Status.ACTIVE.getStatus());
         userEntity.setCustomerCreatedDate(nowDate());
         userService.update(userEntity);
     }
 
-    private UserEntity createCustomerRecord(PostSignUpRequest postSignUpRequest) {
+    private UserEntity createUserRecord(PostSignUpRequest postSignUpRequest) {
         UserEntity userEntity = new UserEntity();
         userEntity.setType(UserEntity.Type.USER.getType());
         userEntity.setSubtype(UserEntity.SubType.NA.getSubType());
@@ -101,12 +101,10 @@ public class SignUpServiceImpl implements SignUpService {
         return userService.save(userEntity);
     }
 
-    private PostSignUpResponse buildPostSignUpResponse(UserEntity userEntity, boolean verificationNeeded) {
+    private PostSignUpResponse buildPostSignUpResponse(UserEntity userEntity) {
         PostSignUpResponse postSignUpResponse = new PostSignUpResponse();
         postSignUpResponse.setCustomerId(userEntity.getId());
-        if (verificationNeeded) {
-            postSignUpResponse.setStatus(UserEntity.Status.VERIFICATION_PENDING.getStatus());
-        }
+        postSignUpResponse.setStatus(UserEntity.Status.VERIFICATION_PENDING.getStatus());
         postSignUpResponse.setDateCreated(convertDateForEndResult(userEntity.getCreatedDate()));
         postSignUpResponse.setDateUpdated(convertDateForEndResult(userEntity.getUpdatedDate()));
         return postSignUpResponse;
@@ -128,14 +126,14 @@ public class SignUpServiceImpl implements SignUpService {
                 emailAddress,
                 UserEntity.Type.USER.getType(),
                 UserEntity.SubType.NA.getSubType(),
-                List.of(UserEntity.Status.SUCCESS.getStatus())
+                List.of(UserEntity.Status.ACTIVE.getStatus())
         );
         if (null != userEntity) {
             log.info("User already exist emailAddress={}, type={}, subType={}, status={}",
                     emailAddress,
                     UserEntity.Type.USER.getType(),
                     UserEntity.SubType.NA.getSubType(),
-                    List.of(UserEntity.Status.SUCCESS.getStatus())
+                    List.of(UserEntity.Status.ACTIVE.getStatus())
             );
             throw new UserAlreadyExistException("User already exit", ErrorCode.USER_ALREADY_EXIST);
         }
