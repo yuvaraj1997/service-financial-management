@@ -15,13 +15,13 @@ import javax.validation.constraints.NotBlank;
 @Setter
 public class PostForgotPasswordUpsertRequest {
 
-    @JsonProperty("token")
-    @NotBlank(message = "token is mandatory")
-    private String token;
+    @JsonProperty("code")
+    @NotBlank(message = "code is mandatory")
+    private String code;
 
-    @JsonProperty("customerId")
-    @NotBlank(message = "customerId is mandatory")
-    private String customerId;
+    @JsonProperty("emailAddress")
+    @NotBlank(message = "emailAddress is mandatory")
+    private String emailAddress;
 
     @JsonProperty("password")
     @NotBlank(message = "password is mandatory")

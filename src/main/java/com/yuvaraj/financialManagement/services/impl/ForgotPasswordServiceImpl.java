@@ -18,14 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 import javax.transaction.Transactional;
-import java.io.UnsupportedEncodingException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 @Service
@@ -39,7 +32,7 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public void processPostForgotPassword(PostForgotPasswordRequest postForgotPasswordRequest){
+    public void processPostForgotPassword(PostForgotPasswordRequest postForgotPasswordRequest) {
         UserEntity userEntity = userService.findByEmailTypeSubtypeAndStatuses(
                 postForgotPasswordRequest.getEmailAddress(),
                 UserEntity.Type.USER.getType(),
@@ -47,7 +40,7 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
                 List.of(UserEntity.Status.ACTIVE.getStatus())
         );
         if (null == userEntity) {
-            log.info("[{}]: Forgot Password: Customer not found or not in success state emailAddress={}, we will still return 200 to prevent any email leakage", postForgotPasswordRequest.getEmailAddress(), postForgotPasswordRequest.getEmailAddress());
+            log.info("[{}]: Forgot Password: Customer not found or not in active state emailAddress={}, we will still return 200 to prevent any email leakage", postForgotPasswordRequest.getEmailAddress(), postForgotPasswordRequest.getEmailAddress());
             return;
         }
         try {
@@ -62,18 +55,18 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
     @Override
     @Transactional(rollbackOn = Exception.class)
     public void processPostForgotPasswordUpsert(PostForgotPasswordUpsertRequest postForgotPasswordUpsertRequest) throws InvalidArgumentException, VerificationCodeExpiredException {
-        //TODO: Token decryption
-        verificationCodeService.isVerificationIdIsValidToProceedVerification(postForgotPasswordUpsertRequest.getToken(), postForgotPasswordUpsertRequest.getCustomerId(), VerificationCodeEntity.Type.SIGN_UP_ACTIVATION);
-        UserEntity userEntity = userService.findById(postForgotPasswordUpsertRequest.getCustomerId());
+        UserEntity userEntity = userService.findByEmail(postForgotPasswordUpsertRequest.getEmailAddress());
         if (null == userEntity) {
-            log.error("[{}]: Process Post Forgot Password Upsert: Customer Not Found.", postForgotPasswordUpsertRequest.getCustomerId());
-            throw new InvalidArgumentException("Customer Not Found", ErrorCode.INVALID_ARGUMENT);
+            log.error("[{}]: Process Post Forgot Password Upsert: User Not Found.", postForgotPasswordUpsertRequest.getEmailAddress());
+            throw new InvalidArgumentException("Invalid verification code", ErrorCode.INVALID_ARGUMENT);
         }
+        verificationCodeService.isVerificationIdIsValidToProceedVerification(postForgotPasswordUpsertRequest.getCode(), userEntity.getId(), VerificationCodeEntity.Type.SIGN_UP_ACTIVATION);
+
         if (!userEntity.getStatus().equals(UserEntity.Status.ACTIVE.getStatus())) {
-            log.error("[{}]:  Process Post Forgot Password Upsert: Customer status is not satisfy. customerId={}, status={}", userEntity.getId(), userEntity.getId(), userEntity.getStatus());
-            throw new InvalidArgumentException("Customer status is not satisfy.", ErrorCode.INVALID_ARGUMENT);
+            log.error("[{}]:  Process Post Forgot Password Upsert: User status is not satisfy. userId={}, status={}", userEntity.getId(), userEntity.getId(), userEntity.getStatus());
+            throw new InvalidArgumentException("User status is not satisfy.", ErrorCode.INVALID_ARGUMENT);
         }
-        passwordService.upsertPassword(passwordEncoder.encode(postForgotPasswordUpsertRequest.getPassword()), postForgotPasswordUpsertRequest.getCustomerId());
-        verificationCodeService.markAsVerified(postForgotPasswordUpsertRequest.getToken(), postForgotPasswordUpsertRequest.getCustomerId());
+        passwordService.upsertPassword(passwordEncoder.encode(postForgotPasswordUpsertRequest.getPassword()), userEntity.getId());
+        verificationCodeService.markAsVerified(postForgotPasswordUpsertRequest.getCode(), userEntity.getId());
     }
 }
