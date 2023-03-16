@@ -133,10 +133,6 @@ public class VerificationCodeServiceImpl implements VerificationCodeService {
         return verificationCodeRepository.findByCodeAndIdentifier(code, identifier);
     }
 
-    private VerificationCodeEntity findByIdAndIdentifier(String id, String identifier) {
-        return verificationCodeRepository.findByIdAndIdentifier(id, identifier);
-    }
-
     @Override
     @Transactional(rollbackOn = Exception.class)
     public void markAsVerified(String code, String identifier) throws InvalidArgumentException {
