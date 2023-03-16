@@ -93,7 +93,7 @@ public class VerificationCodeEntity implements Serializable {
         Date nowDate = nowDate();
         Date timeToUnlock = dateAddSeconds(this.createdDate, this.requestUnlockInSeconds);
         boolean isRequestUnlocked = nowDate.after(timeToUnlock);
-        log.info("[{}]: Still have {} minutes to unlock", this.getIdentifier(), getMinutesLeft(nowDate, timeToUnlock));
+        if (!isRequestUnlocked) log.info("[{}]: Still have {} minutes to unlock", this.getIdentifier(), getMinutesLeft(nowDate, timeToUnlock));
         return isRequestUnlocked;
     }
 
@@ -101,7 +101,7 @@ public class VerificationCodeEntity implements Serializable {
         Date nowDate = nowDate();
         Date timeToUnlock = dateAddSeconds(this.createdDate, resendRequestAfterCertainSeconds);
         boolean isItEligibleToResendVerificationCheck = nowDate.after(timeToUnlock);
-        log.info("[{}]: Still have {} minutes to resend", this.getIdentifier(), getMinutesLeft(nowDate, timeToUnlock));
+        if (!isItEligibleToResendVerificationCheck) log.info("[{}]: Still have {} minutes to resend", this.getIdentifier(), getMinutesLeft(nowDate, timeToUnlock));
         return isItEligibleToResendVerificationCheck;
     }
 

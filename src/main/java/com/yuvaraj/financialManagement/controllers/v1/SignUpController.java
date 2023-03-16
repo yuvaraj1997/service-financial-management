@@ -55,15 +55,16 @@ public class SignUpController {
     public ResponseEntity<Object> postResendVerification(@Valid @RequestBody PostResendVerificationRequest postResendVerificationRequest) throws UserAlreadyExistException, VerificationCodeMaxLimitReachedException, UserNotFoundException, VerificationCodeResendNotAllowedException, InvalidAlgorithmParameterException, NoSuchPaddingException, UnsupportedEncodingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
         log.info("Initiate to process, request={}", new ObjectMapper().valueToTree(postResendVerificationRequest));
         signUpService.processPostResendVerification(postResendVerificationRequest);
-        log.info("Successfully processed response={}", new ObjectMapper().valueToTree(postResendVerificationRequest));
+        log.info("Successfully processed.");
         return okAsJson();
     }
 
     @PostMapping(path = "verify", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> postVerify(@Valid @RequestBody PostVerifyRequest postVerifyRequest) throws UserAlreadyExistException, VerificationCodeMaxLimitReachedException, UserNotFoundException, VerificationCodeResendNotAllowedException, InvalidArgumentException, VerificationCodeExpiredException {
+        //TODO: Change to redirect to magic link or static page to say its verified
         log.info("Initiate to process, request={}", new ObjectMapper().valueToTree(postVerifyRequest));
         signUpService.processPostVerify(postVerifyRequest);
-        log.info("Successfully processed response={}", new ObjectMapper().valueToTree(postVerifyRequest));
+        log.info("Successfully processed.");
         return okAsJson();
     }
 }

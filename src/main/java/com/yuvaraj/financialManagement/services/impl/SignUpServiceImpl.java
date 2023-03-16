@@ -51,6 +51,7 @@ public class SignUpServiceImpl implements SignUpService {
         checkIfUserAlreadyExist(null, postSignUpRequest.getEmailAddress());
         UserEntity userEntity = getAnyExistingRecordIfAvailable(postSignUpRequest.getEmailAddress());
         if (null != userEntity) {
+            verificationCodeService.sendVerification(userEntity.getId(), VerificationCodeEntity.Type.SIGN_UP_ACTIVATION);
             return buildPostSignUpResponse(userEntity);
         }
         userEntity = createUserRecord(postSignUpRequest);

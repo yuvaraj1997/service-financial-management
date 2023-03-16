@@ -40,20 +40,17 @@ public class ForgotPasswordController {
 
     @PostMapping(path = "", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> postForgotPassword(@Valid @RequestBody PostForgotPasswordRequest postForgotPasswordRequest, HttpServletRequest httpServletRequest) throws UserAlreadyExistException, VerificationCodeMaxLimitReachedException, VerificationCodeResendNotAllowedException, InvalidAlgorithmParameterException, NoSuchPaddingException, UnsupportedEncodingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
-        String logMessage = String.format("%s %s", httpServletRequest.getMethod(), httpServletRequest.getRequestURI());
-        log.info("Initiate to process {}, request={}", logMessage, new ObjectMapper().valueToTree(postForgotPasswordRequest));
+        log.info("Initiate to process, request={}", new ObjectMapper().valueToTree(postForgotPasswordRequest));
         forgotPasswordService.processPostForgotPassword(postForgotPasswordRequest);
-        log.info("Successfully processed {}, request={}", logMessage, new ObjectMapper().valueToTree(postForgotPasswordRequest));
+        log.info("Successfully processed");
         return okAsJson();
     }
 
     @PostMapping(path = "/password", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> postForgotPasswordUpsert(@Valid @RequestBody PostForgotPasswordUpsertRequest postForgotPasswordUpsertRequest, HttpServletRequest httpServletRequest) throws UserAlreadyExistException, VerificationCodeMaxLimitReachedException, VerificationCodeResendNotAllowedException, InvalidArgumentException, VerificationCodeExpiredException {
-        //TODO: Remove password from logging
-        String logMessage = String.format("%s %s", httpServletRequest.getMethod(), httpServletRequest.getRequestURI());
-        log.info("Initiate to process {}, request={}", logMessage, new ObjectMapper().valueToTree(postForgotPasswordUpsertRequest));
+        log.info("Initiate to process, request={}", new ObjectMapper().valueToTree(postForgotPasswordUpsertRequest));
         forgotPasswordService.processPostForgotPasswordUpsert(postForgotPasswordUpsertRequest);
-        log.info("Successfully processed {}, request={}", logMessage, new ObjectMapper().valueToTree(postForgotPasswordUpsertRequest));
+        log.info("Successfully processed.");
         return okAsJson();
     }
 }
