@@ -19,7 +19,7 @@ public class PostVerifyRequest {
     @NotBlank(message = "token is mandatory")
     private String token;
 
-    @JsonProperty("customerId")
-    @NotBlank(message = "customerId is mandatory")
-    private String customerId;
+    @JsonProperty("userId")
+    @NotBlank(message = "userId is mandatory")
+    private String userId;
 }

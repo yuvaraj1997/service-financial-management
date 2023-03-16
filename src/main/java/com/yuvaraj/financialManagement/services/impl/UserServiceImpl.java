@@ -34,6 +34,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserEntity findByIdAndStatus(String id, String status) {
+        return userRepository.findByIdAndStatus(id, status);
+    }
+
+    @Override
     public UserEntity findByEmailTypeSubtypeAndStatuses(String email, String type, String subtype, List<String> status) {
         return userRepository.findByEmailTypeSubtypeAndStatuses(email, type, subtype, status);
     }

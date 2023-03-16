@@ -12,6 +12,8 @@ public interface UserService {
 
     UserEntity findById(String id);
 
+    UserEntity findByIdAndStatus(String id, String status);
+
     UserEntity findByEmailTypeSubtypeAndStatuses(String email, String type, String subtype, List<String> status);
 
     UserEntity findByEmail(String email);

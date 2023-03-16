@@ -13,8 +13,8 @@ import lombok.Setter;
 @Setter
 public class PostSignUpResponse {
 
-    @JsonProperty("customerId")
-    private String customerId;
+    @JsonProperty("userId")
+    private String userId;
 
     @JsonProperty("status")
     private String status;

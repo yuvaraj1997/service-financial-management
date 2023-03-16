@@ -16,8 +16,7 @@ import javax.validation.constraints.NotBlank;
 @Setter
 public class PostResendVerificationRequest {
 
-    @JsonProperty("emailAddress")
-    @NotBlank(message = "Email address is mandatory")
-    @Email(message = "Email address should be valid")
-    private String emailAddress;
+    @JsonProperty("userId")
+    @NotBlank(message = "User Id is mandatory")
+    private String userId;
 }
