@@ -12,6 +12,7 @@ import com.yuvaraj.financialManagement.models.controllers.v1.signup.postSignUp.P
 import com.yuvaraj.financialManagement.models.controllers.v1.signup.postSignUp.PostSignUpResponse;
 import com.yuvaraj.financialManagement.models.controllers.v1.signup.postVerify.PostVerifyRequest;
 import com.yuvaraj.financialManagement.models.db.AuthorityEntity;
+import com.yuvaraj.financialManagement.models.db.PasswordEntity;
 import com.yuvaraj.financialManagement.models.db.UserEntity;
 import com.yuvaraj.financialManagement.models.db.VerificationCodeEntity;
 import com.yuvaraj.financialManagement.services.*;
@@ -48,7 +49,6 @@ public class SignUpServiceImpl implements SignUpService {
             return buildPostSignUpResponse(userEntity);
         }
         userEntity = createUserRecord(postSignUpRequest);
-        passwordService.upsertPassword(passwordEncoder.encode(postSignUpRequest.getPassword()), userEntity.getId());
         verificationCodeService.sendVerification(userEntity.getId(), VerificationCodeEntity.Type.SIGN_UP_ACTIVATION);
         return buildPostSignUpResponse(userEntity);
     }
@@ -95,8 +95,9 @@ public class SignUpServiceImpl implements SignUpService {
         userEntity.setSubtype(UserEntity.SubType.NA.getSubType());
         userEntity.setEmail(postSignUpRequest.getEmailAddress());
         userEntity.setFullName(postSignUpRequest.getFullName());
-        userEntity.setAuthorityEntity(authorityService.getById(AuthorityEntity.Role.USER.getId()));
+        userEntity.addAuthority(authorityService.getById(AuthorityEntity.Role.USER.getId()));
         userEntity.setStatus(UserEntity.Status.VERIFICATION_PENDING.getStatus());
+        userEntity.setPasswordEntity(new PasswordEntity(null, passwordEncoder.encode(postSignUpRequest.getPassword()), PasswordEntity.Status.ACTIVE.getStatus(), null, null));
         return userService.save(userEntity);
     }
 

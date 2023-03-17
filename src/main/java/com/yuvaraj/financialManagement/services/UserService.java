@@ -17,4 +17,6 @@ public interface UserService {
     UserEntity findByEmailTypeSubtypeAndStatuses(String email, String type, String subtype, List<String> status);
 
     UserEntity findByEmail(String email);
+
+    UserEntity findByEmailWithPassword(String email);
 }

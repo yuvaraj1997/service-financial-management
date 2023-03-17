@@ -55,7 +55,7 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
     @Override
     @Transactional(rollbackOn = Exception.class)
     public void processPostForgotPasswordUpsert(PostForgotPasswordUpsertRequest postForgotPasswordUpsertRequest) throws InvalidArgumentException, VerificationCodeExpiredException {
-        UserEntity userEntity = userService.findByEmail(postForgotPasswordUpsertRequest.getEmailAddress());
+        UserEntity userEntity = userService.findByEmailWithPassword(postForgotPasswordUpsertRequest.getEmailAddress());
         if (null == userEntity) {
             log.error("[{}]: Process Post Forgot Password Upsert: User Not Found.", postForgotPasswordUpsertRequest.getEmailAddress());
             throw new InvalidArgumentException("Invalid verification code", ErrorCode.INVALID_ARGUMENT);
@@ -66,7 +66,8 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
             log.error("[{}]:  Process Post Forgot Password Upsert: User status is not satisfy. userId={}, status={}", userEntity.getId(), userEntity.getId(), userEntity.getStatus());
             throw new InvalidArgumentException("User status is not satisfy.", ErrorCode.INVALID_ARGUMENT);
         }
-        passwordService.upsertPassword(passwordEncoder.encode(postForgotPasswordUpsertRequest.getPassword()), userEntity.getId());
+        userEntity.getPasswordEntity().setPassword(passwordEncoder.encode(postForgotPasswordUpsertRequest.getPassword()));
+        userService.save(userEntity);
         verificationCodeService.markAsVerified(postForgotPasswordUpsertRequest.getCode(), userEntity.getId());
     }
 }

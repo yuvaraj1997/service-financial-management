@@ -101,4 +101,40 @@
                                  referencedColumnNames="ut_id"
                                  referencedTableName="user_tab"/>
     </changeSet>
+    <changeSet id="202303161724" author="Yuvaraj">
+        <modifyDataType tableName="sign_in_tab"
+                        columnName="sit_refresh_token_generation_time"
+                        newDataType="int(50)"/>
+    </changeSet>
+    <changeSet id="202303161726" author="Yuvaraj">
+        <modifyDataType tableName="sign_in_tab"
+                        columnName="sit_refresh_token_generation_time"
+                        newDataType="bigint"/>
+    </changeSet>
+
+    <changeSet id="202303171724" author="Yuvaraj">
+        <createTable tableName="user_authority_tab">
+            <column name="ua_user_id" type="varchar(255)"/>
+            <column name="ua_authority_id" type="varchar(255)"/>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="ua_user_id"
+                                 baseTableName="user_authority_tab"
+                                 constraintName="fk_user_authority_user_id"
+                                 referencedColumnNames="ut_id"
+                                 referencedTableName="user_tab"/>
+        <addForeignKeyConstraint baseColumnNames="ua_authority_id"
+                                 baseTableName="user_authority_tab"
+                                 constraintName="fk_user_authority_authority_id"
+                                 referencedColumnNames="at_id"
+                                 referencedTableName="authority_tab"/>
+    </changeSet>
+
+    <changeSet id="202303171725" author="Yuvaraj">
+        <dropForeignKeyConstraint baseTableName="user_tab"
+                                  constraintName="fk_user_authority_id"/>
+        <dropColumn tableName="user_tab">
+            <column name="ut_authority_id"/>
+        </dropColumn>
+        <addUniqueConstraint tableName="user_authority_tab" columnNames="ua_user_id,ua_authority_id"/>
+    </changeSet>
 </databaseChangeLog>

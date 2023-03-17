@@ -1,9 +1,12 @@
 package com.yuvaraj.financialManagement.models.db;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -11,6 +14,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity(name = "UserEntity")
@@ -49,16 +53,27 @@ public class UserEntity implements Serializable {
     @Column(name = "ut_customer_created_date")
     private Date customerCreatedDate;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "ut_authority_id", referencedColumnName = "at_id")
-    private AuthorityEntity authorityEntity;
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "user_authority_tab",
+            joinColumns = {
+                    @JoinColumn(name = "ua_user_id", referencedColumnName = "ut_id")
+            },
+            inverseJoinColumns = {
+                    @JoinColumn(name = "ua_authority_id", referencedColumnName = "at_id")
+            })
+    private Set<AuthorityEntity> authorities = new HashSet<>();
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "ut_password_id", referencedColumnName = "pt_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private PasswordEntity passwordEntity;
 
-    @OneToMany(mappedBy = "userEntity")
-    private Set<SignInEntity> signInEntities;
+    @JsonIgnore
+    @OneToMany(mappedBy = "userEntity",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    @BatchSize(size = 5)
+    private Set<SignInEntity> signInEntities = new HashSet<>();
 
     @Column(name = "ut_status")
     private String status;
@@ -72,6 +87,10 @@ public class UserEntity implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "ut_record_update_date")
     private Date updatedDate;
+
+    public void addAuthority(AuthorityEntity authorityEntity) {
+        this.authorities.add(authorityEntity);
+    }
 
     @Getter
     @AllArgsConstructor

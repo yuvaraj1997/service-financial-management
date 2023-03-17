@@ -14,10 +14,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-
-import javax.servlet.http.HttpServletRequest;
 
 import static com.yuvaraj.financialManagement.helpers.ResponseHelper.handleGeneralException;
 import static com.yuvaraj.financialManagement.helpers.ResponseHelper.handleMethodArgumentNotValidException;
@@ -26,15 +26,12 @@ import static com.yuvaraj.financialManagement.helpers.ResponseHelper.handleMetho
 @Slf4j
 public class ExceptionHandlerConfiguration extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler({Exception.class, RuntimeException.class})
-    public ResponseEntity<Object> handleSpecialException(Exception exception, WebRequest request, HttpServletRequest httpRequest) {
-        String logMessage = String.format("%s %s", httpRequest.getMethod(), httpRequest.getRequestURI());
-        log.error("{}: path = {} errorMessage={}", exception.getClass().getSimpleName(), logMessage, exception.getMessage());
-        HttpHeaders headers = new HttpHeaders();
-        if (exception instanceof RuntimeException) {
-            return handleExceptionInternal(exception, handleGeneralException(HttpStatus.INTERNAL_SERVER_ERROR.value(), ErrorCode.INTERNAL_SERVER_ERROR), headers, HttpStatus.INTERNAL_SERVER_ERROR, request);
-        }
-        return handleExceptionInternal(exception, handleGeneralException(HttpStatus.INTERNAL_SERVER_ERROR.value(), ErrorCode.INTERNAL_SERVER_ERROR), headers, HttpStatus.INTERNAL_SERVER_ERROR, request);
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseBody
+    protected Object handleSpecialException(Exception exception) {
+        log.error("{}: errorMessage={}", exception.getClass().getSimpleName(), exception.getMessage());
+        return handleGeneralException(HttpStatus.INTERNAL_SERVER_ERROR.value(), ErrorCode.INTERNAL_SERVER_ERROR);
     }
 
     @Override
@@ -43,7 +40,7 @@ public class ExceptionHandlerConfiguration extends ResponseEntityExceptionHandle
     }
 
     @ExceptionHandler({UserNotFoundException.class})
-    public ResponseEntity<Object> customerNotFoundException(UserNotFoundException userNotFoundException, WebRequest request) {
+    public ResponseEntity<Object> userNotFoundException(UserNotFoundException userNotFoundException, WebRequest request) {
         HttpHeaders headers = new HttpHeaders();
         return handleExceptionInternal(userNotFoundException, handleGeneralException(HttpStatus.BAD_REQUEST.value(), userNotFoundException.getErrorCode()), headers, HttpStatus.BAD_REQUEST, request);
     }

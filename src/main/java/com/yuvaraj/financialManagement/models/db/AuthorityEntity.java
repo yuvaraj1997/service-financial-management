@@ -10,6 +10,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Set;
 
 @Entity
 @Table(name = "authority_tab")
@@ -29,6 +30,9 @@ public class AuthorityEntity implements Serializable {
 
     @Column(name = "at_role", nullable = false, unique = true)
     private String role;
+
+    @ManyToMany(mappedBy = "authorities")
+    private Set<UserEntity> userEntitySet;
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)

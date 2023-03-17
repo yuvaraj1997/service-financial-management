@@ -3,7 +3,10 @@
 
     <conversionRule conversionWord="http_method"
                     converterClass="com.yuvaraj.financialManagement.common.log.HttpMethodConverter"/>
-    <conversionRule conversionWord="uri" converterClass="com.yuvaraj.financialManagement.common.log.UriConverter"/>
+    <conversionRule conversionWord="uri"
+                    converterClass="com.yuvaraj.financialManagement.common.log.UriConverter"/>
+    <conversionRule conversionWord="actorEmail"
+                    converterClass="com.yuvaraj.financialManagement.common.log.ActorEmailConverter"/>
 
     <property name="LOGS" value="./logs"/>
 
@@ -13,8 +16,7 @@
             <layout class="com.yuvaraj.financialManagement.common.log.configuration.MaskingPatternLayout">
                 <maskPattern>\"password\"\s*:\s*\"(.*?)\"</maskPattern> <!-- Password JSON pattern -->
                 <Pattern>
-                    %d{ISO8601} %highlight(%-5level) [%blue(%t)] %boldMagenta([method=%http_method])
-                    %boldYellow([uri=%uri]) %yellow(%C{1.}): %msg%n%throwable
+                    %d{ISO8601} %highlight(%-5level) [%blue(%t)] %boldMagenta([method=%http_method]) %boldYellow([uri=%uri]) %boldYellow([email=%actorEmail]) %yellow(%C{1.}): %msg%n%throwable
                 </Pattern>
             </layout>
         </encoder>
@@ -47,9 +49,9 @@
     </root>
 
     <!--    &lt;!&ndash; LOG "com.baeldung*" at TRACE level &ndash;&gt;-->
-    <!--    <logger name="com.baeldung" level="trace" additivity="false">-->
-    <!--        <appender-ref ref="RollingFile" />-->
-    <!--        <appender-ref ref="Console" />-->
-    <!--    </logger>-->
+    <logger name="com.yuvarj" level="trace" additivity="false">
+        <appender-ref ref="RollingFile"/>
+        <appender-ref ref="Console"/>
+    </logger>
 
 </configuration>

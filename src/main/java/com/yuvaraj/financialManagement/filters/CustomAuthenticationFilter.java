@@ -54,12 +54,10 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         try {
             SignInRequest signInRequest = new ObjectMapper().readValue(request.getInputStream(), SignInRequest.class);
             validateSignInRequest(signInRequest);
-            log.info("[{}]:AttemptAuthentication: Attempting login ", signInRequest.getEmailAddress());
+            log.info("User attempting to login {}", signInRequest.getEmailAddress());
             UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(new ObjectMapper().writeValueAsString(signInRequest), signInRequest.getPassword());
             return authenticationManager.authenticate(usernamePasswordAuthenticationToken);
-        } catch (IOException e) {
-            throw new AuthenticationServiceException(e.getMessage(), e);
-        } catch (InvalidArgumentException e) {
+        } catch (IOException | InvalidArgumentException e) {
             throw new AuthenticationServiceException(e.getMessage(), e);
         }
     }
@@ -69,8 +67,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         response.setContentType(APPLICATION_JSON_VALUE);
         CustomUser user = (CustomUser) authResult.getPrincipal();
         try {
-            //TODO: Enhance security service to return all possible values like
-            AuthSuccessfulResponse authSuccessfulResponse = jwtGenerationService.generateRefreshToken(user.getCustomerId());
+            AuthSuccessfulResponse authSuccessfulResponse = jwtGenerationService.generateRefreshToken(user.getUserId(), user.getSignInRequest().getEmailAddress());
             signInService.handleSignInData(user, authSuccessfulResponse, user.getSignInRequest());
             log.info("{}", JsonHelper.toJson(authSuccessfulResponse));
             new ObjectMapper().writeValue(response.getOutputStream(), authSuccessfulResponse);
@@ -97,7 +94,6 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     }
 
     private void validateSignInRequest(SignInRequest signInRequest) throws InvalidArgumentException {
-        //Todo: extreme checking
         checkNotNullAndNotEmpty(signInRequest.getEmailAddress(), "emailAddress cannot be null or empty");
         checkNotNullAndNotEmpty(signInRequest.getPassword(), "password cannot be null or empty");
         checkNotNullAndNotEmpty(signInRequest.getIpAddress(), "ipAddress cannot be null or empty");
