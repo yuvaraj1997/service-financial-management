@@ -1,8 +1,10 @@
 package com.yuvaraj.financialManagement.configuration;
 
+import com.yuvaraj.financialManagement.exceptions.CustomException;
 import com.yuvaraj.financialManagement.exceptions.InvalidArgumentException;
 import com.yuvaraj.financialManagement.exceptions.UserNotFoundException;
 import com.yuvaraj.financialManagement.exceptions.signup.UserAlreadyExistException;
+import com.yuvaraj.financialManagement.exceptions.transactionCategory.TransactionCategoryAlreadyExistException;
 import com.yuvaraj.financialManagement.exceptions.verification.VerificationCodeExpiredException;
 import com.yuvaraj.financialManagement.exceptions.verification.VerificationCodeMaxLimitReachedException;
 import com.yuvaraj.financialManagement.exceptions.verification.VerificationCodeResendNotAllowedException;
@@ -34,6 +36,14 @@ public class ExceptionHandlerConfiguration extends ResponseEntityExceptionHandle
         return handleGeneralException(HttpStatus.INTERNAL_SERVER_ERROR.value(), ErrorCode.INTERNAL_SERVER_ERROR);
     }
 
+    @ExceptionHandler({TransactionCategoryAlreadyExistException.class, InvalidArgumentException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    protected Object handleBadRequest(CustomException exception) {
+        log.error("{}: errorMessage={}", exception.getClass().getSimpleName(), exception.getMessage());
+        return handleGeneralException(HttpStatus.BAD_REQUEST.value(), exception.getErrorCode());
+    }
+
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         return handleExceptionInternal(ex, handleMethodArgumentNotValidException(HttpStatus.BAD_REQUEST.value(), ErrorCode.INVALID_ARGUMENT, ex), headers, status, request);
@@ -61,12 +71,6 @@ public class ExceptionHandlerConfiguration extends ResponseEntityExceptionHandle
     public ResponseEntity<Object> verificationCodeMaxLimitReachedExceptionException(VerificationCodeResendNotAllowedException verificationCodeResendNotAllowedException, WebRequest request) {
         HttpHeaders headers = new HttpHeaders();
         return handleExceptionInternal(verificationCodeResendNotAllowedException, handleGeneralException(HttpStatus.BAD_REQUEST.value(), verificationCodeResendNotAllowedException.getErrorCode()), headers, HttpStatus.BAD_REQUEST, request);
-    }
-
-    @ExceptionHandler({InvalidArgumentException.class})
-    public ResponseEntity<Object> invalidArgumentException(InvalidArgumentException invalidArgumentException, WebRequest request) {
-        HttpHeaders headers = new HttpHeaders();
-        return handleExceptionInternal(invalidArgumentException, handleGeneralException(HttpStatus.BAD_REQUEST.value(), invalidArgumentException.getErrorCode()), headers, HttpStatus.BAD_REQUEST, request);
     }
 
     @ExceptionHandler({VerificationCodeExpiredException.class})

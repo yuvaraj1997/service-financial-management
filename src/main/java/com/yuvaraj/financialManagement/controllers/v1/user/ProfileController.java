@@ -1,4 +1,4 @@
-package com.yuvaraj.financialManagement.controllers.v1;
+package com.yuvaraj.financialManagement.controllers.v1.user;
 
 import com.yuvaraj.financialManagement.services.ProfileService;
 import lombok.extern.slf4j.Slf4j;

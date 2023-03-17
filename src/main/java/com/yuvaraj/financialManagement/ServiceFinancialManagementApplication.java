@@ -22,7 +22,7 @@ public class ServiceFinancialManagementApplication {
 //            for (AuthorityEntity.Role role : AuthorityEntity.Role.values()) {
 //                authorityRepository.save(new AuthorityEntity(role.getId(), role.getName(), role.getRole(), null, null));
 //            }
-//            AuthorityEntity authorityEntity = authorityRepository.getById(AuthorityEntity.Role.USER.getId());
+//            AuthorityEntity authorityEntity = authorityRepository.getById(AuthorityEntity.Role.SUPER_ADMIN.getId());
 //            UserEntity userEntity = userRepository.findByEmailWithPassword("yuvarajnaidu00@gmail.com");
 //            if (null != userEntity.getPasswordEntity()) {
 //                userEntity.getPasswordEntity().setPassword("updated");

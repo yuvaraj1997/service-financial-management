@@ -1,4 +1,4 @@
-package com.yuvaraj.financialManagement.controllers.v1;
+package com.yuvaraj.financialManagement.controllers.v1.basic;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yuvaraj.financialManagement.exceptions.InvalidArgumentException;

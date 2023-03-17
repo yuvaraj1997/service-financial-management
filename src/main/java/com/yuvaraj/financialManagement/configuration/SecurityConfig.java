@@ -2,6 +2,7 @@ package com.yuvaraj.financialManagement.configuration;
 
 import com.yuvaraj.financialManagement.filters.CustomAuthenticationFilter;
 import com.yuvaraj.financialManagement.filters.CustomAuthorizationFilter;
+import com.yuvaraj.financialManagement.models.db.AuthorityEntity;
 import com.yuvaraj.financialManagement.services.SignInService;
 import com.yuvaraj.security.services.JwtGenerationService;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +43,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.authorizeRequests().antMatchers(SESSION_TOKEN_GENERATION_URL).authenticated();
-        http.authorizeRequests().antMatchers("/v1/profile/**").authenticated();
+        http.authorizeRequests().antMatchers("/**/profile/**").authenticated();
+        http.authorizeRequests().antMatchers("/**/transaction-category/**").hasAuthority(AuthorityEntity.Role.SUPER_ADMIN.getRole());
         http.authorizeRequests().anyRequest().permitAll();
         http.addFilter(customAuthenticationFilter);
         http.addFilterBefore(new CustomAuthorizationFilter(signInService, jwtGenerationService), UsernamePasswordAuthenticationFilter.class);

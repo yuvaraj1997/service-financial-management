@@ -67,7 +67,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         response.setContentType(APPLICATION_JSON_VALUE);
         CustomUser user = (CustomUser) authResult.getPrincipal();
         try {
-            AuthSuccessfulResponse authSuccessfulResponse = jwtGenerationService.generateRefreshToken(user.getUserId(), user.getSignInRequest().getEmailAddress());
+            AuthSuccessfulResponse authSuccessfulResponse = jwtGenerationService.generateRefreshToken(user.getUserId(), user.getUsername());
             signInService.handleSignInData(user, authSuccessfulResponse, user.getSignInRequest());
             log.info("{}", JsonHelper.toJson(authSuccessfulResponse));
             new ObjectMapper().writeValue(response.getOutputStream(), authSuccessfulResponse);

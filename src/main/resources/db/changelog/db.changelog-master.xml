@@ -137,4 +137,23 @@
         </dropColumn>
         <addUniqueConstraint tableName="user_authority_tab" columnNames="ua_user_id,ua_authority_id"/>
     </changeSet>
+
+    <changeSet id="202303172024" author="Yuvaraj">
+        <createTable tableName="transaction_category_tab">
+            <column name="tct_id" type="INT"/>
+            <column name="tct_category" type="varchar(255)"/>
+            <column name="tct_record_create_date" type="DATETIME"/>
+            <column name="tct_record_update_date" type="DATETIME"/>
+        </createTable>
+        <addUniqueConstraint tableName="transaction_category_tab" columnNames="tct_category"/>
+    </changeSet>
+
+    <changeSet id="202303172027" author="Yuvaraj">
+        <addPrimaryKey tableName="transaction_category_tab" columnNames="tct_id"/>
+    </changeSet>
+
+    <changeSet id="202303172028" author="Yuvaraj">
+        <addAutoIncrement tableName="transaction_category_tab" columnName="tct_id" columnDataType="INT"/>
+    </changeSet>
+
 </databaseChangeLog>
