@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 /**
  * @author Yuvaraj
@@ -24,6 +25,10 @@ public class PutTransactionCategoryRequest {
 
     @JsonProperty("category")
     @NotBlank(message = "Category is mandatory")
+    @Pattern(
+            regexp = "^[a-zA-Z ]*$",
+            message = "Category name should be valid"
+    )
     String category;
 
 }

@@ -2,6 +2,7 @@ package com.yuvaraj.financialManagement.controllers.v1.superAdmin;
 
 import com.yuvaraj.financialManagement.exceptions.InvalidArgumentException;
 import com.yuvaraj.financialManagement.exceptions.transactionCategory.TransactionCategoryAlreadyExistException;
+import com.yuvaraj.financialManagement.models.common.SearchRequest;
 import com.yuvaraj.financialManagement.models.controllers.v1.transaction.transactionCategory.PostTransactionCategoryRequest;
 import com.yuvaraj.financialManagement.models.controllers.v1.transaction.transactionCategory.PutTransactionCategoryRequest;
 import com.yuvaraj.financialManagement.services.TransactionCategoryService;
@@ -24,13 +25,24 @@ public class TransactionCategoryController {
     @Autowired
     TransactionCategoryService transactionCategoryService;
 
-    @PostMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE)
+
+    @GetMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> findById(Authentication authentication, @PathVariable Long id) throws InvalidArgumentException {
+        return ok(transactionCategoryService.get(id));
+    }
+
+    @PostMapping(path = "", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> create(Authentication authentication, @Valid @RequestBody PostTransactionCategoryRequest postTransactionCategoryRequest) throws TransactionCategoryAlreadyExistException {
         return ok(transactionCategoryService.save(postTransactionCategoryRequest));
     }
 
-    @PutMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(path = "", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> update(Authentication authentication, @Valid @RequestBody PutTransactionCategoryRequest putTransactionCategoryRequest) throws TransactionCategoryAlreadyExistException, InvalidArgumentException {
         return ok(transactionCategoryService.update(putTransactionCategoryRequest));
+    }
+
+    @PostMapping(path = "search", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> search(Authentication authentication, @Valid @RequestBody SearchRequest searchRequest) {
+        return ok(transactionCategoryService.search(searchRequest));
     }
 }
