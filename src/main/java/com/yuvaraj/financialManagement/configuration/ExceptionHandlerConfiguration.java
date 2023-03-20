@@ -8,6 +8,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -18,6 +19,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import java.util.Arrays;
 
 import static com.yuvaraj.financialManagement.helpers.ResponseHelper.handleGeneralException;
+import static com.yuvaraj.financialManagement.helpers.ResponseHelper.handleMethodArgumentNotValidException;
 
 @RestControllerAdvice
 @Slf4j
@@ -64,5 +66,10 @@ public class ExceptionHandlerConfiguration extends ResponseEntityExceptionHandle
         return handleExceptionInternal(exception, handleGeneralException(HttpStatus.BAD_REQUEST.value(), ErrorCode.INVALID_ARGUMENT), headers, HttpStatus.BAD_REQUEST, request);
     }
 
-
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException exception, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        String errorDetails = "Unacceptable JSON " + exception.getMessage();
+        log.error(errorDetails);
+        return handleExceptionInternal(exception, handleMethodArgumentNotValidException(HttpStatus.BAD_REQUEST.value(), ErrorCode.INVALID_ARGUMENT, exception), headers, HttpStatus.BAD_REQUEST, request);
+    }
 }

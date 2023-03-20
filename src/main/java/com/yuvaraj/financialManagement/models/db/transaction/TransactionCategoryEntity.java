@@ -27,7 +27,7 @@ public class TransactionCategoryEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "tct_id")
-    private Long id;
+    private Integer id;
 
     @Column(name = "tct_category")
     private String category;

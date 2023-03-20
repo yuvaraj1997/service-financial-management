@@ -43,9 +43,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.authorizeRequests().antMatchers(SESSION_TOKEN_GENERATION_URL).authenticated();
-        http.authorizeRequests().antMatchers("/**/profile/**").authenticated();
-        http.authorizeRequests().antMatchers("/**/m/**").hasAuthority(AuthorityEntity.Role.SUPER_ADMIN.getRole());
-        http.authorizeRequests().anyRequest().permitAll();
+        http.authorizeRequests().antMatchers("/v1/signup", "/v1/forgot-password").permitAll();
+        http.authorizeRequests().antMatchers("/v1/**").authenticated();
+        http.authorizeRequests().antMatchers("/v1/m/**").hasAuthority(AuthorityEntity.Role.SUPER_ADMIN.getRole());
         http.addFilter(customAuthenticationFilter);
         http.addFilterBefore(new CustomAuthorizationFilter(signInService, jwtGenerationService), UsernamePasswordAuthenticationFilter.class);
     }

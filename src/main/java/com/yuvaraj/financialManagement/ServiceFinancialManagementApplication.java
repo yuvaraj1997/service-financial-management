@@ -1,7 +1,11 @@
 package com.yuvaraj.financialManagement;
 
+import com.yuvaraj.financialManagement.models.db.PasswordEntity;
+import com.yuvaraj.financialManagement.models.db.UserEntity;
+import com.yuvaraj.financialManagement.models.db.transaction.WalletEntity;
 import com.yuvaraj.financialManagement.repositories.AuthorityRepository;
 import com.yuvaraj.financialManagement.repositories.UserRepository;
+import com.yuvaraj.financialManagement.repositories.transaction.WalletRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -17,8 +21,9 @@ public class ServiceFinancialManagementApplication {
     }
 
     @Bean
-    CommandLineRunner run(AuthorityRepository authorityRepository, UserRepository userRepository) {
+    CommandLineRunner run(AuthorityRepository authorityRepository, UserRepository userRepository, WalletRepository walletRepository) {
         return args -> {
+//            testWalletRepository(userRepository, walletRepository);
 //            for (AuthorityEntity.Role role : AuthorityEntity.Role.values()) {
 //                authorityRepository.save(new AuthorityEntity(role.getId(), role.getName(), role.getRole(), null, null));
 //            }
@@ -50,5 +55,30 @@ public class ServiceFinancialManagementApplication {
 //			);
         };
     }
+
+    private void testWalletRepository(UserRepository userRepository, WalletRepository walletRepository) {
+        UserEntity userEntity = createFakeUser(userRepository, "yuvaraj.naidu+wallet@gmail.com");
+
+        walletRepository.saveAndFlush(new WalletEntity(null, "Cash Wallet", userEntity, 0l, null, null));
+
+        userRepository.delete(userEntity);
+    }
+
+    private UserEntity createFakeUser(UserRepository userRepository, String email) {
+        UserEntity userEntity = userRepository.findByEmailWithPassword(email);
+
+        if (null != userEntity) {
+            return userEntity;
+        }
+
+        return userRepository.saveAndFlush(new UserEntity(
+                null, UserEntity.Type.USER.getType(), UserEntity.SubType.NA.getSubType(),
+                "Test", "Test", email, "60123531234", null,
+                null,
+                new PasswordEntity(null, "test", PasswordEntity.Status.ACTIVE.getStatus(), null, null),
+                null, UserEntity.Status.ACTIVE.getStatus(), null, null
+        ));
+    }
+
 
 }

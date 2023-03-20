@@ -155,5 +155,45 @@
     <changeSet id="202303172028" author="Yuvaraj">
         <addAutoIncrement tableName="transaction_category_tab" columnName="tct_id" columnDataType="INT"/>
     </changeSet>
+    <changeSet id="202303201726" author="Yuvaraj">
+        <!--        <dropForeignKeyConstraint baseTableName="user_authority_tab"-->
+        <!--                                  constraintName="fk_user_authority_authority_id"/>-->
+        <modifyDataType tableName="authority_tab"
+                        columnName="at_id"
+                        newDataType="bigint"/>
+        <modifyDataType tableName="user_authority_tab"
+                        columnName="ua_authority_id"
+                        newDataType="bigint"/>
+        <addForeignKeyConstraint baseColumnNames="ua_authority_id"
+                                 baseTableName="user_authority_tab"
+                                 constraintName="fk_user_authority_authority_id"
+                                 referencedColumnNames="at_id"
+                                 referencedTableName="authority_tab"/>
+    </changeSet>
+    <changeSet id="202303201727" author="Yuvaraj">
+        <modifyDataType tableName="transaction_category_tab"
+                        columnName="tct_id"
+                        newDataType="int"/>
+    </changeSet>
 
+    <changeSet id="202303202024" author="Yuvaraj">
+        <createTable tableName="wallet_tab">
+            <column name="wt_id" type="varchar(255)">
+                <constraints primaryKey="true" primaryKeyName="wt_id_pk"/>
+            </column>
+            <column name="wt_name" type="varchar(255)"/>
+            <column name="wt_user_id" type="varchar(255)"/>
+            <column name="wt_initial_balance" type="BIGINT"/>
+            <column name="wt_record_create_date" type="DATETIME"/>
+            <column name="wt_record_update_date" type="DATETIME"/>
+        </createTable>
+        <addNotNullConstraint tableName="wallet_tab" columnName="wt_name" columnDataType="varchar(255)"/>
+        <addNotNullConstraint tableName="wallet_tab" columnName="wt_user_id" columnDataType="varchar(255)"/>
+        <addUniqueConstraint tableName="wallet_tab" columnNames="wt_user_id,wt_name"/>
+        <addForeignKeyConstraint baseColumnNames="wt_user_id"
+                                 baseTableName="wallet_tab"
+                                 constraintName="fk_wallet_user_id"
+                                 referencedColumnNames="ut_id"
+                                 referencedTableName="user_tab"/>
+    </changeSet>
 </databaseChangeLog>

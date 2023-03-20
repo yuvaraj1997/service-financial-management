@@ -59,7 +59,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void patchStatus(@NotNull String userId, @NotNull UserEntity.Status status) throws UserNotFoundException {
         UserEntity userEntity = findById(userId);
-        if (null == userEntity){
+        if (null == userEntity) {
             log.error("User not found userId: " + userId);
             throw new UserNotFoundException("User not found", ErrorCode.USER_NOT_FOUND);
         }

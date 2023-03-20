@@ -2,15 +2,9 @@ package com.yuvaraj.financialManagement.controllers.v1.superAdmin;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yuvaraj.financialManagement.exceptions.InvalidArgumentException;
-import com.yuvaraj.financialManagement.exceptions.transactionCategory.TransactionCategoryAlreadyExistException;
 import com.yuvaraj.financialManagement.exceptions.user.UserNotFoundException;
 import com.yuvaraj.financialManagement.helpers.ErrorCode;
-import com.yuvaraj.financialManagement.models.common.SearchRequest;
-import com.yuvaraj.financialManagement.models.controllers.v1.transaction.transactionCategory.PostTransactionCategoryRequest;
-import com.yuvaraj.financialManagement.models.controllers.v1.transaction.transactionCategory.PutTransactionCategoryRequest;
 import com.yuvaraj.financialManagement.models.controllers.v1.user.patchStatus.PatchStatusRequest;
-import com.yuvaraj.financialManagement.models.db.UserEntity;
-import com.yuvaraj.financialManagement.services.TransactionCategoryService;
 import com.yuvaraj.financialManagement.services.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
-import static com.yuvaraj.financialManagement.helpers.ResponseHelper.ok;
 import static com.yuvaraj.financialManagement.helpers.ResponseHelper.okAsJson;
 
 @RestController
@@ -37,7 +29,7 @@ public class UserController {
 
     @PatchMapping(path = "{userId}/status", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> patchStatus(Authentication authentication, @PathVariable @Valid @NotBlank(message = "userId is mandatory") String userId, @Valid @RequestBody PatchStatusRequest patchStatusRequest) throws UserNotFoundException, InvalidArgumentException {
-        if (authentication.getName().equals(userId)){
+        if (authentication.getName().equals(userId)) {
             log.info("User cannot patch status for ownself. userId={} , request={}", userId, new ObjectMapper().valueToTree(patchStatusRequest));
             throw new InvalidArgumentException("User cannot patch status for ownself.", ErrorCode.INVALID_ARGUMENT);
         }
