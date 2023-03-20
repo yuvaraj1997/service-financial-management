@@ -18,7 +18,7 @@ import javax.validation.Valid;
 import static com.yuvaraj.financialManagement.helpers.ResponseHelper.ok;
 
 @RestController
-@RequestMapping(path = "v1/transaction-category")
+@RequestMapping(path = "v1/m/transaction-category")
 @Slf4j
 public class TransactionCategoryController {
 

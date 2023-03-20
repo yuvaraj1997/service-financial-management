@@ -23,13 +23,6 @@ import static com.yuvaraj.financialManagement.helpers.ResponseHelper.handleGener
 @Slf4j
 public class ExceptionHandlerConfiguration extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ResponseBody
-    protected Object handleSpecialException(Exception exception) {
-        log.error("{}: errorMessage={}", exception.getClass().getSimpleName(), exception.getMessage());
-        return handleGeneralException(HttpStatus.INTERNAL_SERVER_ERROR.value(), ErrorCode.INTERNAL_SERVER_ERROR);
-    }
 
     @ExceptionHandler({CustomException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -37,6 +30,22 @@ public class ExceptionHandlerConfiguration extends ResponseEntityExceptionHandle
     protected Object handleBadRequest(CustomException exception) {
         log.error("{}: errorMessage={}", exception.getClass().getSimpleName(), exception.getMessage());
         return handleGeneralException(HttpStatus.BAD_REQUEST.value(), exception.getErrorCode());
+    }
+
+    @ExceptionHandler({IllegalArgumentException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    protected Object handleIllegalException(Exception exception) {
+        log.error("{}: errorMessage={}", exception.getClass().getSimpleName(), exception.getMessage());
+        return handleGeneralException(HttpStatus.BAD_REQUEST.value(), ErrorCode.INVALID_ARGUMENT);
+    }
+
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseBody
+    protected Object handleSpecialException(Exception exception) {
+        log.error("{}: errorMessage={}", exception.getClass().getSimpleName(), exception.getMessage());
+        return handleGeneralException(HttpStatus.INTERNAL_SERVER_ERROR.value(), ErrorCode.INTERNAL_SERVER_ERROR);
     }
 
     @Override

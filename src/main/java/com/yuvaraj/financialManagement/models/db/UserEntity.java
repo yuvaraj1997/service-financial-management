@@ -111,8 +111,9 @@ public class UserEntity implements Serializable {
 
     @Getter
     @AllArgsConstructor
-    public enum Status {
+    public enum Status implements Serializable {
         VERIFICATION_PENDING("VERIFICATION_PENDING"),
+        LOCKED("LOCKED"),
         ACTIVE("ACTIVE");
 
         private final String status;

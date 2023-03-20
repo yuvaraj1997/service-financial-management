@@ -1,5 +1,6 @@
-package com.yuvaraj.financialManagement.exceptions;
+package com.yuvaraj.financialManagement.exceptions.user;
 
+import com.yuvaraj.financialManagement.exceptions.CustomException;
 import com.yuvaraj.financialManagement.helpers.ErrorCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
