@@ -13,13 +13,10 @@ import com.yuvaraj.financialManagement.repositories.transaction.TransactionCateg
 import com.yuvaraj.financialManagement.services.TransactionCategoryService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.Arrays;
 
 @Service
 @Slf4j
@@ -84,31 +81,8 @@ public class TransactionCategoryServiceImpl implements TransactionCategoryServic
 
     @Override
     public SearchResponse<TransactionCategoryEntity> search(SearchRequest searchRequest) {
-        searchRequest.cleanRequest();
-        sortingFiltration(searchRequest);
-        Pageable pageable = PageRequest.of(searchRequest.getPageNo() - 1,
-                searchRequest.getPageSize(),
-                searchRequest.getSort().getDirection(),
-                searchRequest.getSort().getField());
-
-        return new SearchResponse<TransactionCategoryEntity>().computeData(transactionCategoryRepository.search(searchRequest.getSearch(), pageable));
-    }
-
-    private void sortingFiltration(SearchRequest searchRequest) {
-        String defaultSortingField = "category";
-        Sort.Direction defaultSortingDirection = Sort.Direction.ASC;
-        String[] allowedSortingFields = {"category", "createdDate", "updatedDate"};
-
-        if (null == searchRequest.getSort().getDirection()) {
-            searchRequest.getSort().setDirection(defaultSortingDirection);
-        }
-
-        if (null == searchRequest.getSort().getField() || searchRequest.getSort().getField().isEmpty()) {
-            searchRequest.getSort().setField(defaultSortingField);
-        }
-
-        if (Arrays.stream(allowedSortingFields).noneMatch(s -> s.equals(searchRequest.getSort().getField()))) {
-            searchRequest.getSort().setField(defaultSortingField);
-        }
+        return new SearchResponse<TransactionCategoryEntity>().computeData(
+                transactionCategoryRepository.search(searchRequest.getSearch(),
+                        searchRequest.getPageableRequest("category", Sort.Direction.ASC, new String[]{"category", "createdDate", "updatedDate"})));
     }
 }

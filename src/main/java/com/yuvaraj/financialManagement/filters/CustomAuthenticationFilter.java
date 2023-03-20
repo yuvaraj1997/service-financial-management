@@ -89,8 +89,9 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         } else if (failed.getCause() instanceof SignInMaxSessionReachedException) {
             SignInMaxSessionReachedException signInMaxSessionReachedException = (SignInMaxSessionReachedException) failed.getCause();
             new ObjectMapper().writeValue(response.getOutputStream(), ResponseHelper.handleGeneralException(HttpStatus.BAD_REQUEST.value(), MAX_NUMBER_OF_SESSION_REACHED, signInMaxSessionReachedException.getDeviceDetails()));
+        } else {
+            new ObjectMapper().writeValue(response.getOutputStream(), ResponseHelper.handleGeneralException(HttpStatus.BAD_REQUEST.value(), INVALID_USERNAME_OR_PASSWORD));
         }
-        new ObjectMapper().writeValue(response.getOutputStream(), ResponseHelper.handleGeneralException(HttpStatus.BAD_REQUEST.value(), INVALID_USERNAME_OR_PASSWORD));
     }
 
     private void validateSignInRequest(SignInRequest signInRequest) throws InvalidArgumentException {

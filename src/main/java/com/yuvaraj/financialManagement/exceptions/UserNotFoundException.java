@@ -6,8 +6,17 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public class UserNotFoundException extends Exception {
+public class UserNotFoundException extends CustomException {
 
     private final String errorMessage;
-    private final ErrorCode errorCode;
+
+    public UserNotFoundException(String errorMessage, ErrorCode errorCode) {
+        super(errorMessage, errorCode);
+        this.errorMessage = errorMessage;
+    }
+
+    public UserNotFoundException(String message, String errorMessage, ErrorCode errorCode) {
+        super(message, errorCode);
+        this.errorMessage = errorMessage;
+    }
 }

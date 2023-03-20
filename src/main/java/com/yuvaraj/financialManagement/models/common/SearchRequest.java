@@ -4,10 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.domain.PageRequest;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.*;
+import java.util.Arrays;
 
 /**
  * @author Yuvaraj
@@ -30,16 +30,42 @@ public class SearchRequest {
 
     private String search = "";
 
-    private Sort sort;
+    private Sort sort = new Sort();
 
-    public void cleanRequest() {
-        if (null == this.search) {
-            this.search = "";
+    public void setSearch(String search) {
+        if (null != search) {
+            this.search = search;
+            return;
+        }
+        this.search = "";
+    }
+
+    public void setSort(Sort sort) {
+        if (null != sort) {
+            this.sort = sort;
+            return;
+        }
+        this.sort = new Sort();
+    }
+
+    public Integer getPageNo() {
+        return this.pageNo - 1;
+    }
+
+    public PageRequest getPageableRequest(@NotBlank String defaultSortingField, @NotNull org.springframework.data.domain.Sort.Direction defaultSortingDirection, @NotNull @NotEmpty String[] allowedSortingFields) {
+        if (null == this.getSort().getDirection()) {
+            this.getSort().setDirection(defaultSortingDirection);
         }
 
-        if (null == this.sort) {
-            this.sort = new Sort();
+        if (null == this.getSort().getField() || this.getSort().getField().isEmpty()) {
+            this.getSort().setField(defaultSortingField);
         }
+
+        if (Arrays.stream(allowedSortingFields).noneMatch(s -> s.equals(this.getSort().getField()))) {
+            this.getSort().setField(defaultSortingField);
+        }
+
+        return PageRequest.of(this.getPageNo(), this.getPageSize(), this.getSort().getDirection(), this.getSort().getField());
     }
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -48,6 +74,7 @@ public class SearchRequest {
     @Setter
     public static class Sort {
 
+        @Pattern(regexp = "asc|desc", flags = Pattern.Flag.CASE_INSENSITIVE, message = "Invalid sort direction")
         private org.springframework.data.domain.Sort.Direction direction;
 
         private String field;
