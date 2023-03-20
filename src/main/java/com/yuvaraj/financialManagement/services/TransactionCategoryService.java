@@ -13,9 +13,9 @@ import com.yuvaraj.financialManagement.models.db.transaction.TransactionCategory
  */
 public interface TransactionCategoryService {
 
-    TransactionCategoryEntity findById(Long id);
+    TransactionCategoryEntity findById(Integer id);
 
-    TransactionCategoryEntity get(Long id) throws InvalidArgumentException;
+    TransactionCategoryEntity get(Integer id) throws InvalidArgumentException;
 
     TransactionCategoryEntity save(PostTransactionCategoryRequest postTransactionCategoryRequest) throws TransactionCategoryAlreadyExistException;
 

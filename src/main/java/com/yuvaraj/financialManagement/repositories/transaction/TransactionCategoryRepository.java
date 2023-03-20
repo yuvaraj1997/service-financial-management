@@ -6,7 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-public interface TransactionCategoryRepository extends JpaRepository<TransactionCategoryEntity, Long> {
+public interface TransactionCategoryRepository extends JpaRepository<TransactionCategoryEntity, Integer> {
 
     boolean existsByCategory(String category);
 

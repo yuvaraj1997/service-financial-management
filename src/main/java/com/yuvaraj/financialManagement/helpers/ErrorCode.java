@@ -20,7 +20,10 @@ public enum ErrorCode {
     INVALID_USERNAME_OR_PASSWORD(3004, "Invalid username or password."),
     MAX_NUMBER_OF_SESSION_REACHED(3005, "Max number of session reached. Please choose one of this device to be removed."),
     TRANSACTION_CATEGORY_ALREADY_EXIST(4000, "Transaction category already exist. Please enter a new category name."),
-    WALLET_NAME_ALREADY_EXIST(5000, "Wallet name already exist. Please enter a new wallet name.");
+    TRANSACTION_CATEGORY_NOT_FOUND(4001, "Transaction category not found. If the error still persist please contact us."),
+    WALLET_NAME_ALREADY_EXIST(5000, "Wallet name already exist. Please enter a new wallet name."),
+    WALLET_NOT_FOUND(5001, "Wallet not found. If the error still persist please contact us."),
+    TRANSACTION_NOT_FOUND(6000, "Transaction not found. If the error still persist please contact us.");
 
     private final int code;
     private final String message;

@@ -196,4 +196,34 @@
                                  referencedColumnNames="ut_id"
                                  referencedTableName="user_tab"/>
     </changeSet>
+    <changeSet id="202303202224" author="Yuvaraj">
+        <createTable tableName="transaction_tab">
+            <column name="tt_id" type="varchar(255)">
+                <constraints primaryKey="true" primaryKeyName="tt_id_pk"/>
+            </column>
+            <column name="tt_amount" type="BIGINT"/>
+            <column name="tt_transaction_date" type="DATETIME"/>
+            <column name="tt_wallet_id" type="varchar(255)"/>
+            <column name="tt_transaction_category_id" type="varchar(255)"/>
+            <column name="tt_type" type="varchar(45)"/>
+            <column name="tt_notes" type="varchar(255)"/>
+            <column name="tt_record_create_date" type="DATETIME"/>
+            <column name="tt_record_update_date" type="DATETIME"/>
+        </createTable>
+        <addNotNullConstraint tableName="transaction_tab" columnName="tt_amount" columnDataType="BIGINT"/>
+        <addNotNullConstraint tableName="transaction_tab" columnName="tt_transaction_date" columnDataType="DATETIME"/>
+        <addNotNullConstraint tableName="transaction_tab" columnName="tt_wallet_id" columnDataType="varchar(255)"/>
+        <addNotNullConstraint tableName="transaction_tab" columnName="tt_transaction_category_id" columnDataType="INT"/>
+        <addNotNullConstraint tableName="transaction_tab" columnName="tt_type" columnDataType="varchar(45)"/>
+        <addForeignKeyConstraint baseColumnNames="tt_wallet_id"
+                                 baseTableName="transaction_tab"
+                                 constraintName="fk_transaction_wallet_id"
+                                 referencedColumnNames="wt_id"
+                                 referencedTableName="wallet_tab"/>
+        <addForeignKeyConstraint baseColumnNames="tt_transaction_category_id"
+                                 baseTableName="transaction_tab"
+                                 constraintName="fk_transaction_category_id"
+                                 referencedColumnNames="tct_id"
+                                 referencedTableName="transaction_category_tab"/>
+    </changeSet>
 </databaseChangeLog>

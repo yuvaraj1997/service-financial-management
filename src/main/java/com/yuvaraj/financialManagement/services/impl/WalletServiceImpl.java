@@ -52,7 +52,7 @@ public class WalletServiceImpl implements WalletService {
         WalletEntity walletEntity = walletRepository.findByIdAndUserEntity(walletId, userService.findById(userId)).orElse(null);
         if (null == walletEntity) {
             log.info("Wallet not found walletId={} , userId={}", walletId, userId);
-            throw new InvalidArgumentException("Wallet not found.", ErrorCode.INVALID_ARGUMENT);
+            throw new InvalidArgumentException("Wallet not found.", ErrorCode.WALLET_NOT_FOUND);
         }
         return walletEntity;
     }

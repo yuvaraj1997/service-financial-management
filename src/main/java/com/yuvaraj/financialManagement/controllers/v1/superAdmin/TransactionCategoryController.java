@@ -27,7 +27,7 @@ public class TransactionCategoryController {
 
 
     @GetMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> findById(Authentication authentication, @PathVariable Long id) throws InvalidArgumentException {
+    public ResponseEntity<Object> findById(Authentication authentication, @PathVariable Integer id) throws InvalidArgumentException {
         return ok(transactionCategoryService.get(id));
     }
 

@@ -31,16 +31,16 @@ public class TransactionCategoryServiceImpl implements TransactionCategoryServic
     }
 
     @Override
-    public TransactionCategoryEntity findById(Long id) {
+    public TransactionCategoryEntity findById(Integer id) {
         return transactionCategoryRepository.findById(id).orElse(null);
     }
 
     @Override
-    public TransactionCategoryEntity get(Long id) throws InvalidArgumentException {
+    public TransactionCategoryEntity get(Integer id) throws InvalidArgumentException {
         TransactionCategoryEntity transactionCategoryEntity = findById(id);
         if (null == transactionCategoryEntity) {
             log.info("Transaction Category not found id={}", id);
-            throw new InvalidArgumentException("Transaction Category not found.", ErrorCode.INVALID_ARGUMENT);
+            throw new InvalidArgumentException("Transaction Category not found.", ErrorCode.TRANSACTION_CATEGORY_NOT_FOUND);
         }
         return transactionCategoryEntity;
     }

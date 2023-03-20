@@ -21,7 +21,7 @@ import javax.validation.constraints.Pattern;
 public class PutTransactionCategoryRequest {
     @JsonProperty("id")
     @NotNull(message = "Category Id is mandatory")
-    Long id;
+    Integer id;
 
     @JsonProperty("category")
     @NotBlank(message = "Category is mandatory")

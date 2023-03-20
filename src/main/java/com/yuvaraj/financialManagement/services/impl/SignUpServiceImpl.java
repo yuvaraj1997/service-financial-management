@@ -15,7 +15,10 @@ import com.yuvaraj.financialManagement.models.db.AuthorityEntity;
 import com.yuvaraj.financialManagement.models.db.PasswordEntity;
 import com.yuvaraj.financialManagement.models.db.UserEntity;
 import com.yuvaraj.financialManagement.models.db.VerificationCodeEntity;
-import com.yuvaraj.financialManagement.services.*;
+import com.yuvaraj.financialManagement.services.AuthorityService;
+import com.yuvaraj.financialManagement.services.SignUpService;
+import com.yuvaraj.financialManagement.services.UserService;
+import com.yuvaraj.financialManagement.services.VerificationCodeService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -33,8 +36,9 @@ import static com.yuvaraj.financialManagement.helpers.DateHelpers.nowDate;
 public class SignUpServiceImpl implements SignUpService {
 
     private final UserService userService;
-    private final PasswordService passwordService;
+
     private final AuthorityService authorityService;
+
     private final VerificationCodeService verificationCodeService;
 
     private final PasswordEncoder passwordEncoder;
