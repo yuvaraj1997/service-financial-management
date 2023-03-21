@@ -11,11 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-
 import java.util.Date;
 
 import static com.yuvaraj.financialManagement.helpers.ResponseHelper.ok;
@@ -31,7 +29,7 @@ public class TransactionController {
 
     @PostMapping(path = "", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> create(Authentication authentication, @Valid @RequestBody CreateTransactionRequest createTransactionRequest) throws InvalidArgumentException {
-        if (createTransactionRequest.getAmount() == 0){
+        if (createTransactionRequest.getAmount() == 0) {
             throw new InvalidArgumentException("Zero is not allowed", ErrorCode.INVALID_ARGUMENT);
         }
         return ok(transactionService.create(createTransactionRequest, authentication.getName()));
@@ -39,7 +37,7 @@ public class TransactionController {
 
     @PutMapping(path = "", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> update(Authentication authentication, @Valid @RequestBody UpdateTransactionRequest updateTransactionRequest) throws InvalidArgumentException {
-        if (updateTransactionRequest.getAmount() == 0){
+        if (updateTransactionRequest.getAmount() == 0) {
             throw new InvalidArgumentException("Zero is not allowed", ErrorCode.INVALID_ARGUMENT);
         }
         return ok(transactionService.update(updateTransactionRequest, authentication.getName()));
@@ -74,5 +72,26 @@ public class TransactionController {
         }
 
         return ok(transactionService.summary(walletId, frequency, authentication.getName()));
+    }
+
+
+    @GetMapping(path = "{walletId}/transactions", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> transactions(Authentication authentication, @PathVariable String walletId, @RequestParam("type") FrequencyHelper.Frequency frequency,
+                                               @RequestParam(name = "startDate", required = false) Date startDate, @RequestParam(name = "endDate", required = false) Date endDate) throws InvalidArgumentException {
+        if (frequency.getPeriod().equals(FrequencyHelper.Frequency.CUSTOM.getPeriod())) {
+            if (null == startDate) {
+                throw new InvalidArgumentException("startDate must not be null", ErrorCode.INVALID_ARGUMENT);
+            }
+            if (null == endDate) {
+                endDate = startDate;
+            }
+            if (endDate.before(startDate)) {
+                throw new InvalidArgumentException("endDate cannot be before start date", ErrorCode.INVALID_ARGUMENT);
+            }
+
+            frequency.setCustomDateRange(startDate, endDate);
+        }
+
+        return ok(transactionService.transactions(walletId, frequency, authentication.getName()));
     }
 }

@@ -2,10 +2,12 @@ package com.yuvaraj.financialManagement.services.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yuvaraj.financialManagement.exceptions.InvalidArgumentException;
+import com.yuvaraj.financialManagement.helpers.DateHelpers;
 import com.yuvaraj.financialManagement.helpers.ErrorCode;
 import com.yuvaraj.financialManagement.helpers.FrequencyHelper;
 import com.yuvaraj.financialManagement.models.controllers.v1.transaction.transaction.createTransaction.CreateTransactionRequest;
 import com.yuvaraj.financialManagement.models.controllers.v1.transaction.transaction.summary.SummaryTransactionResponse;
+import com.yuvaraj.financialManagement.models.controllers.v1.transaction.transaction.transactions.TransactionsResponse;
 import com.yuvaraj.financialManagement.models.controllers.v1.transaction.transaction.updateTransaction.UpdateTransactionRequest;
 import com.yuvaraj.financialManagement.models.db.transaction.TransactionCategoryEntity;
 import com.yuvaraj.financialManagement.models.db.transaction.TransactionEntity;
@@ -16,9 +18,15 @@ import com.yuvaraj.financialManagement.services.TransactionService;
 import com.yuvaraj.financialManagement.services.WalletService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.time.DateUtils;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -125,5 +133,40 @@ public class TransactionServiceImpl implements TransactionService {
         long expenses = transactionRepository.getSum(walletEntity, dateRange.getStartDate(), dateRange.getEndDate(), TransactionEntity.Type.EXPENSE.name());
 
         return new SummaryTransactionResponse(income, expenses);
+    }
+
+    @Override
+    public TransactionsResponse transactions(String walletId, FrequencyHelper.Frequency frequency, String userId) throws InvalidArgumentException {
+        WalletEntity walletEntity = walletService.findByIdAndUserId(walletId, userId);
+        FrequencyHelper.DateRange dateRange = frequency.getDateRange();
+
+        long income = transactionRepository.getSum(walletEntity, dateRange.getStartDate(), dateRange.getEndDate(), TransactionEntity.Type.INCOME.name());
+        long expenses = transactionRepository.getSum(walletEntity, dateRange.getStartDate(), dateRange.getEndDate(), TransactionEntity.Type.EXPENSE.name());
+        List<TransactionEntity> transactionEntities = transactionRepository.getTransactions(walletEntity, dateRange.getStartDate(), dateRange.getEndDate(), Sort.by(Sort.Direction.DESC, "transactionDate"));
+
+        TransactionsResponse transactionsResponse = new TransactionsResponse();
+        transactionsResponse.setIncome(income);
+        transactionsResponse.setExpenses(expenses);
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MMM dd, yyyy");
+
+        Date date = DateHelpers.nowDate();
+        Date yesterdayDate = DateHelpers.yesterdayDate();
+
+        for (TransactionEntity transactionEntity : transactionEntities) {
+            if (DateUtils.isSameDay(date, transactionEntity.getTransactionDate())) {
+                transactionsResponse.getTransactions().putIfAbsent("Today", new LinkedList<>());
+                transactionsResponse.getTransactions().get("Today").add(transactionEntity);
+            } else if (DateUtils.isSameDay(yesterdayDate, transactionEntity.getTransactionDate())) {
+                transactionsResponse.getTransactions().putIfAbsent("Yesterday", new LinkedList<>());
+                transactionsResponse.getTransactions().get("Yesterday").add(transactionEntity);
+            } else {
+                String formattedDate = simpleDateFormat.format(transactionEntity.getTransactionDate());
+                transactionsResponse.getTransactions().putIfAbsent(formattedDate, new LinkedList<>());
+                transactionsResponse.getTransactions().get(formattedDate).add(transactionEntity);
+            }
+        }
+
+        return transactionsResponse;
     }
 }

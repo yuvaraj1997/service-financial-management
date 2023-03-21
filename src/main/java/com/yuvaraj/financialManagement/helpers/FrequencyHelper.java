@@ -3,7 +3,6 @@ package com.yuvaraj.financialManagement.helpers;
 import com.yuvaraj.financialManagement.exceptions.InvalidArgumentException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.util.Date;
 
@@ -33,7 +32,7 @@ public class FrequencyHelper {
             }
 
             DateRange dateRange = null;
-            switch (this.period){
+            switch (this.period) {
                 case "MONTHLY":
                     Date startDateOfTheMonth = DateHelpers.getStartDateOfTheMonth();
                     dateRange = new DateRange(startDateOfTheMonth, DateHelpers.getEndDateOfTheMonth(startDateOfTheMonth));

@@ -22,6 +22,11 @@ public class DateHelpers {
         return new DateTime(DateTimeZone.forID(TIME_ZONE)).toDate();
     }
 
+    public static Date yesterdayDate() {
+        return new DateTime(DateTimeZone.forID(TIME_ZONE)).minusDays(1).toDate();
+    }
+
+
     public static DateTime nowDateTime() {
         return new DateTime(DateTimeZone.forID(TIME_ZONE));
     }
@@ -30,14 +35,14 @@ public class DateHelpers {
         return Calendar.getInstance(TimeZone.getTimeZone(TIME_ZONE));
     }
 
-    public static void resetToStartOfDay(Calendar calendar){
+    public static void resetToStartOfDay(Calendar calendar) {
         calendar.set(Calendar.HOUR_OF_DAY, 0); // ! clear would not reset the hour of day !
         calendar.clear(Calendar.MINUTE);
         calendar.clear(Calendar.SECOND);
         calendar.clear(Calendar.MILLISECOND);
     }
 
-    public static void resetToEndOfDay(Calendar calendar){
+    public static void resetToEndOfDay(Calendar calendar) {
         calendar.set(Calendar.HOUR_OF_DAY, calendar.getActualMaximum(Calendar.HOUR_OF_DAY));
         calendar.set(Calendar.MINUTE, 59);
         calendar.set(Calendar.SECOND, 59);
