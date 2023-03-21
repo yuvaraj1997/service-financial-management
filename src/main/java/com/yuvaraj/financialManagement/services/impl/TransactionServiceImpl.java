@@ -121,8 +121,9 @@ public class TransactionServiceImpl implements TransactionService {
         WalletEntity walletEntity = walletService.findByIdAndUserId(walletId, userId);
         FrequencyHelper.DateRange dateRange = frequency.getDateRange();
 
-        Long income = transactionRepository.getSum(walletEntity, dateRange.getStartDate(), dateRange.getEndDate(), TransactionEntity.Type.INCOME.name());
-        Long expenses = transactionRepository.getSum(walletEntity, dateRange.getStartDate(), dateRange.getEndDate(), TransactionEntity.Type.INCOME.name());
+        long income = transactionRepository.getSum(walletEntity, dateRange.getStartDate(), dateRange.getEndDate(), TransactionEntity.Type.INCOME.name());
+        long expenses = transactionRepository.getSum(walletEntity, dateRange.getStartDate(), dateRange.getEndDate(), TransactionEntity.Type.EXPENSE.name());
+
         return new SummaryTransactionResponse(income, expenses);
     }
 }

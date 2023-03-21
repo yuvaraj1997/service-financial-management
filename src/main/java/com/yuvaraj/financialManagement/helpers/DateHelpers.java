@@ -30,29 +30,44 @@ public class DateHelpers {
         return Calendar.getInstance(TimeZone.getTimeZone(TIME_ZONE));
     }
 
-    public static Calendar nowCalendarStartOfTheDay() {
-        Calendar calendar = nowCalendar();
+    public static void resetToStartOfDay(Calendar calendar){
         calendar.set(Calendar.HOUR_OF_DAY, 0); // ! clear would not reset the hour of day !
         calendar.clear(Calendar.MINUTE);
         calendar.clear(Calendar.SECOND);
         calendar.clear(Calendar.MILLISECOND);
+    }
+
+    public static void resetToEndOfDay(Calendar calendar){
+        calendar.set(Calendar.HOUR_OF_DAY, calendar.getActualMaximum(Calendar.HOUR_OF_DAY));
+        calendar.set(Calendar.MINUTE, 59);
+        calendar.set(Calendar.SECOND, 59);
+        calendar.set(Calendar.MILLISECOND, calendar.getActualMaximum(Calendar.MILLISECOND));
+    }
+
+    public static Calendar nowCalendarStartOfTheDay() {
+        Calendar calendar = nowCalendar();
+        resetToStartOfDay(calendar);
         return calendar;
+    }
+
+    public static Date resetToStartOfTheDay(Date date) {
+        Calendar calendar = nowCalendar();
+        calendar.setTime(date);
+        resetToStartOfDay(calendar);
+        return calendar.getTime();
     }
 
     public static Calendar nowCalendarEndOfTheDay() {
         Calendar calendar = nowCalendar();
-        calendar.set(Calendar.HOUR_OF_DAY, calendar.getActualMaximum(Calendar.HOUR_OF_DAY));
-        calendar.set(Calendar.MINUTE, 59);
-        calendar.set(Calendar.SECOND, 59);
-        calendar.set(Calendar.MILLISECOND, calendar.getActualMaximum(Calendar.MILLISECOND));
+        resetToEndOfDay(calendar);
         return calendar;
     }
 
-    public static void setCalendarEndOfDay(Calendar calendar) {
-        calendar.set(Calendar.HOUR_OF_DAY, calendar.getActualMaximum(Calendar.HOUR_OF_DAY));
-        calendar.set(Calendar.MINUTE, 59);
-        calendar.set(Calendar.SECOND, 59);
-        calendar.set(Calendar.MILLISECOND, calendar.getActualMaximum(Calendar.MILLISECOND));
+    public static Date resetToEndOfTheDay(Date date) {
+        Calendar calendar = nowCalendar();
+        calendar.setTime(date);
+        resetToEndOfDay(calendar);
+        return calendar.getTime();
     }
 
     public static String convertDateForEndResult(Date date) {
@@ -109,7 +124,7 @@ public class DateHelpers {
     public static Date getEndDateOfTheWeek(Date date) {
         Calendar calendar = nowCalendar();
         calendar.setTime(date);
-        setCalendarEndOfDay(calendar);
+        resetToEndOfDay(calendar);
         calendar.set(Calendar.DAY_OF_WEEK, calendar.getFirstDayOfWeek());
         calendar.add(Calendar.WEEK_OF_YEAR, 1);
         calendar.add(Calendar.DATE, -1);
@@ -125,7 +140,7 @@ public class DateHelpers {
     public static Date getEndDateOfTheMonth(Date date) {
         Calendar calendar = nowCalendar();
         calendar.setTime(date);
-        setCalendarEndOfDay(calendar);
+        resetToEndOfDay(calendar);
         calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
         return calendar.getTime();
     }
@@ -139,7 +154,7 @@ public class DateHelpers {
     public static Date getEndDateOfTheyYear(Date date) {
         Calendar calendar = nowCalendar();
         calendar.setTime(date);
-        setCalendarEndOfDay(calendar);
+        resetToEndOfDay(calendar);
         calendar.set(Calendar.DAY_OF_YEAR, calendar.getActualMaximum(Calendar.DAY_OF_YEAR));
         return calendar.getTime();
     }

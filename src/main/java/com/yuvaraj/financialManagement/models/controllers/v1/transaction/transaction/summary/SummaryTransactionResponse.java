@@ -15,9 +15,9 @@ import lombok.Setter;
 public class SummaryTransactionResponse {
 
     @JsonProperty("income")
-    Long income;
+    long income;
 
-    @JsonProperty("Expenses")
-    Long expenses;
+    @JsonProperty("expenses")
+    long expenses;
 
 }
