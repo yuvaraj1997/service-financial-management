@@ -3,7 +3,9 @@ package com.yuvaraj.financialManagement.services.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yuvaraj.financialManagement.exceptions.InvalidArgumentException;
 import com.yuvaraj.financialManagement.helpers.ErrorCode;
+import com.yuvaraj.financialManagement.helpers.FrequencyHelper;
 import com.yuvaraj.financialManagement.models.controllers.v1.transaction.transaction.createTransaction.CreateTransactionRequest;
+import com.yuvaraj.financialManagement.models.controllers.v1.transaction.transaction.summary.SummaryTransactionResponse;
 import com.yuvaraj.financialManagement.models.controllers.v1.transaction.transaction.updateTransaction.UpdateTransactionRequest;
 import com.yuvaraj.financialManagement.models.db.transaction.TransactionCategoryEntity;
 import com.yuvaraj.financialManagement.models.db.transaction.TransactionEntity;
@@ -112,5 +114,15 @@ public class TransactionServiceImpl implements TransactionService {
         }
 
         return transactionEntity;
+    }
+
+    @Override
+    public SummaryTransactionResponse summary(String walletId, FrequencyHelper.Frequency frequency, String userId) throws InvalidArgumentException {
+        WalletEntity walletEntity = walletService.findByIdAndUserId(walletId, userId);
+        FrequencyHelper.DateRange dateRange = frequency.getDateRange();
+
+        Long income = transactionRepository.getSum(walletEntity, dateRange.getStartDate(), dateRange.getEndDate(), TransactionEntity.Type.INCOME.name());
+        Long expenses = transactionRepository.getSum(walletEntity, dateRange.getStartDate(), dateRange.getEndDate(), TransactionEntity.Type.INCOME.name());
+        return new SummaryTransactionResponse(income, expenses);
     }
 }

@@ -2,6 +2,7 @@ package com.yuvaraj.financialManagement.controllers.v1.user;
 
 import com.yuvaraj.financialManagement.exceptions.InvalidArgumentException;
 import com.yuvaraj.financialManagement.exceptions.wallet.WalletAlreadyExistException;
+import com.yuvaraj.financialManagement.helpers.FrequencyHelper;
 import com.yuvaraj.financialManagement.models.controllers.v1.transaction.wallet.createWallet.CreateWalletRequest;
 import com.yuvaraj.financialManagement.models.controllers.v1.transaction.wallet.updateWallet.UpdateWalletRequest;
 import com.yuvaraj.financialManagement.services.WalletService;
@@ -49,5 +50,10 @@ public class WalletController {
     @GetMapping(path = "list", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> getAll(Authentication authentication) {
         return ok(walletService.getAllByUserId(authentication.getName()));
+    }
+
+    @GetMapping(path = "{walletId}/summary", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> summary(Authentication authentication, @PathVariable String walletId, @RequestParam(name = "period") FrequencyHelper.Frequency frequency) throws InvalidArgumentException {
+        return ok(walletService.findByIdAndUserId(walletId, authentication.getName()));
     }
 }

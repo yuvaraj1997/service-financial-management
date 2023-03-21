@@ -7,6 +7,7 @@ import org.joda.time.Minutes;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -23,6 +24,35 @@ public class DateHelpers {
 
     public static DateTime nowDateTime() {
         return new DateTime(DateTimeZone.forID(TIME_ZONE));
+    }
+
+    public static Calendar nowCalendar() {
+        return Calendar.getInstance(TimeZone.getTimeZone(TIME_ZONE));
+    }
+
+    public static Calendar nowCalendarStartOfTheDay() {
+        Calendar calendar = nowCalendar();
+        calendar.set(Calendar.HOUR_OF_DAY, 0); // ! clear would not reset the hour of day !
+        calendar.clear(Calendar.MINUTE);
+        calendar.clear(Calendar.SECOND);
+        calendar.clear(Calendar.MILLISECOND);
+        return calendar;
+    }
+
+    public static Calendar nowCalendarEndOfTheDay() {
+        Calendar calendar = nowCalendar();
+        calendar.set(Calendar.HOUR_OF_DAY, calendar.getActualMaximum(Calendar.HOUR_OF_DAY));
+        calendar.set(Calendar.MINUTE, 59);
+        calendar.set(Calendar.SECOND, 59);
+        calendar.set(Calendar.MILLISECOND, calendar.getActualMaximum(Calendar.MILLISECOND));
+        return calendar;
+    }
+
+    public static void setCalendarEndOfDay(Calendar calendar) {
+        calendar.set(Calendar.HOUR_OF_DAY, calendar.getActualMaximum(Calendar.HOUR_OF_DAY));
+        calendar.set(Calendar.MINUTE, 59);
+        calendar.set(Calendar.SECOND, 59);
+        calendar.set(Calendar.MILLISECOND, calendar.getActualMaximum(Calendar.MILLISECOND));
     }
 
     public static String convertDateForEndResult(Date date) {
@@ -68,5 +98,49 @@ public class DateHelpers {
             log.warn("Unable to parse requestedDate={}, dateFormat={}, errorMessage={}", date, dateFormat, e.getMessage());
             return null;
         }
+    }
+
+    public static Date getStartDateOfTheWeek() {
+        Calendar calendar = nowCalendarStartOfTheDay();
+        calendar.set(Calendar.DAY_OF_WEEK, calendar.getFirstDayOfWeek());
+        return calendar.getTime();
+    }
+
+    public static Date getEndDateOfTheWeek(Date date) {
+        Calendar calendar = nowCalendar();
+        calendar.setTime(date);
+        setCalendarEndOfDay(calendar);
+        calendar.set(Calendar.DAY_OF_WEEK, calendar.getFirstDayOfWeek());
+        calendar.add(Calendar.WEEK_OF_YEAR, 1);
+        calendar.add(Calendar.DATE, -1);
+        return calendar.getTime();
+    }
+
+    public static Date getStartDateOfTheMonth() {
+        Calendar calendar = nowCalendarStartOfTheDay();
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        return calendar.getTime();
+    }
+
+    public static Date getEndDateOfTheMonth(Date date) {
+        Calendar calendar = nowCalendar();
+        calendar.setTime(date);
+        setCalendarEndOfDay(calendar);
+        calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+        return calendar.getTime();
+    }
+
+    public static Date getStartDateOfTheYear() {
+        Calendar calendar = nowCalendarStartOfTheDay();
+        calendar.set(Calendar.DAY_OF_YEAR, 1);
+        return calendar.getTime();
+    }
+
+    public static Date getEndDateOfTheyYear(Date date) {
+        Calendar calendar = nowCalendar();
+        calendar.setTime(date);
+        setCalendarEndOfDay(calendar);
+        calendar.set(Calendar.DAY_OF_YEAR, calendar.getActualMaximum(Calendar.DAY_OF_YEAR));
+        return calendar.getTime();
     }
 }
