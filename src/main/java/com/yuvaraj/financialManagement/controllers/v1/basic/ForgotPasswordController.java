@@ -24,12 +24,14 @@ import static com.yuvaraj.financialManagement.helpers.ResponseHelper.okAsJson;
 @Slf4j
 public class ForgotPasswordController {
 
+    private static final String STANDARD_LOG_INITIATE =  "Initiate to process, request={}";
+
     @Autowired
     ForgotPasswordService forgotPasswordService;
 
     @PostMapping(path = "", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> postForgotPassword(@Valid @RequestBody PostForgotPasswordRequest postForgotPasswordRequest) {
-        log.info("Initiate to process, request={}", new ObjectMapper().valueToTree(postForgotPasswordRequest));
+        log.info(STANDARD_LOG_INITIATE, new ObjectMapper().valueToTree(postForgotPasswordRequest));
         forgotPasswordService.processPostForgotPassword(postForgotPasswordRequest);
         log.info("Successfully processed");
         return okAsJson();
@@ -37,7 +39,7 @@ public class ForgotPasswordController {
 
     @PostMapping(path = "/password", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> postForgotPasswordUpsert(@Valid @RequestBody PostForgotPasswordUpsertRequest postForgotPasswordUpsertRequest) throws InvalidArgumentException, VerificationCodeExpiredException {
-        log.info("Initiate to process, request={}", new ObjectMapper().valueToTree(postForgotPasswordUpsertRequest));
+        log.info(STANDARD_LOG_INITIATE, new ObjectMapper().valueToTree(postForgotPasswordUpsertRequest));
         forgotPasswordService.processPostForgotPasswordUpsert(postForgotPasswordUpsertRequest);
         log.info("Successfully processed.");
         return okAsJson();

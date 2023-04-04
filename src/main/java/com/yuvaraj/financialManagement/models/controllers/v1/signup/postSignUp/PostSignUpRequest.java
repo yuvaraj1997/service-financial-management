@@ -4,6 +4,7 @@ package com.yuvaraj.financialManagement.models.controllers.v1.signup.postSignUp;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.yuvaraj.financialManagement.helpers.ValidationHelper;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,8 +21,8 @@ public class PostSignUpRequest {
     @JsonProperty("fullName")
     @NotBlank(message = "Full name is mandatory")
     @Pattern(
-            regexp = "^[a-zA-Z/.@'\\- ]*$",
-            message = "Full name should be valid"
+            regexp = ValidationHelper.FullNameSpecs.REGEX_PATTERN,
+            message = ValidationHelper.FullNameSpecs.REGEX_PATTERN_ERROR_MESSAGE
     )
     private String fullName;
 
@@ -32,6 +33,9 @@ public class PostSignUpRequest {
 
     @JsonProperty("password")
     @NotBlank(message = "Password is mandatory")
-    //TODO: Password strength
+    @Pattern(
+            regexp = ValidationHelper.PasswordSpecs.REGEX_PATTERN,
+            message = ValidationHelper.PasswordSpecs.REGEX_PATTERN_ERROR_MESSAGE
+    )
     private String password;
 }

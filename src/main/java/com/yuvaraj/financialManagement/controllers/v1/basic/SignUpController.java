@@ -34,9 +34,11 @@ public class SignUpController {
     @Autowired
     SignUpService signUpService;
 
+    private static final String STANDARD_LOG_INITIATE =  "Initiate to process, request={}";
+
     @PostMapping(path = "", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> postSignUp(@Valid @RequestBody PostSignUpRequest postSignUpRequest) throws UserAlreadyExistException, VerificationCodeMaxLimitReachedException, VerificationCodeResendNotAllowedException {
-        log.info("Initiate to process, request={}", new ObjectMapper().valueToTree(postSignUpRequest));
+        log.info(STANDARD_LOG_INITIATE, new ObjectMapper().valueToTree(postSignUpRequest));
         PostSignUpResponse postSignUpResponse = signUpService.processPostSignUp(postSignUpRequest);
         log.info("Successfully processed response={}", new ObjectMapper().valueToTree(postSignUpResponse));
         return ok(postSignUpResponse);
@@ -45,7 +47,7 @@ public class SignUpController {
 
     @PostMapping(path = "resend/verification", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> postResendVerification(@Valid @RequestBody PostResendVerificationRequest postResendVerificationRequest) throws UserAlreadyExistException, VerificationCodeMaxLimitReachedException, UserNotFoundException, VerificationCodeResendNotAllowedException, InvalidArgumentException {
-        log.info("Initiate to process, request={}", new ObjectMapper().valueToTree(postResendVerificationRequest));
+        log.info(STANDARD_LOG_INITIATE, new ObjectMapper().valueToTree(postResendVerificationRequest));
         signUpService.processPostResendVerification(postResendVerificationRequest);
         log.info("Successfully processed.");
         return okAsJson();
@@ -53,7 +55,7 @@ public class SignUpController {
 
     @PostMapping(path = "verify", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> postVerify(@Valid @RequestBody PostVerifyRequest postVerifyRequest) throws InvalidArgumentException, VerificationCodeExpiredException {
-        log.info("Initiate to process, request={}", new ObjectMapper().valueToTree(postVerifyRequest));
+        log.info(STANDARD_LOG_INITIATE, new ObjectMapper().valueToTree(postVerifyRequest));
         signUpService.processPostVerify(postVerifyRequest);
         log.info("Successfully processed.");
         return okAsJson();
