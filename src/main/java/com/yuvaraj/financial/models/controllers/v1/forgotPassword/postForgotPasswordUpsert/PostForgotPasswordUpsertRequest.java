@@ -4,10 +4,12 @@ package com.yuvaraj.financial.models.controllers.v1.forgotPassword.postForgotPas
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.yuvaraj.financial.helpers.ValidationHelper;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -25,6 +27,9 @@ public class PostForgotPasswordUpsertRequest {
 
     @JsonProperty("password")
     @NotBlank(message = "password is mandatory")
-    //TODO: Password strength
+    @Pattern(
+            regexp = ValidationHelper.PasswordSpecs.REGEX_PATTERN,
+            message = ValidationHelper.PasswordSpecs.REGEX_PATTERN_ERROR_MESSAGE
+    )
     private String password;
 }

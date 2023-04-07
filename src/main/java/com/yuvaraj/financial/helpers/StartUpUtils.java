@@ -46,12 +46,15 @@ public class StartUpUtils {
 
         if (null == userService.findByEmail(SUPER_ADMIN_EMAIL_ADDRESS)) {
             log.info("Creating super admin user {}", SUPER_ADMIN_EMAIL_ADDRESS);
+            AuthorityEntity superAdminAuthority = authorityService.findById(AuthorityEntity.Role.SUPER_ADMIN.getId());
+
             UserEntity userEntity = new UserEntity();
             userEntity.setType(com.yuvaraj.financial.models.db.UserEntity.Type.USER.getType());
             userEntity.setSubtype(com.yuvaraj.financial.models.db.UserEntity.SubType.NA.getSubType());
             userEntity.setEmail(SUPER_ADMIN_EMAIL_ADDRESS);
             userEntity.setFullName("Super Admin");
-            userEntity.addAuthority(authorityService.getById(AuthorityEntity.Role.SUPER_ADMIN.getId()));
+            userService.save(userEntity);
+            userEntity.addAuthority(superAdminAuthority);
             userEntity.setStatus(UserEntity.Status.VERIFICATION_PENDING.getStatus());
             userEntity.setPasswordEntity(new PasswordEntity(null, passwordEncoder.encode("temp"), PasswordEntity.Status.EXPIRED.getStatus(), null, null));
             userService.save(userEntity);
