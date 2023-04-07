@@ -156,8 +156,8 @@
         <addAutoIncrement tableName="transaction_category_tab" columnName="tct_id" columnDataType="INT"/>
     </changeSet>
     <changeSet id="202303201726" author="Yuvaraj">
-        <!--        <dropForeignKeyConstraint baseTableName="user_authority_tab"-->
-        <!--                                  constraintName="fk_user_authority_authority_id"/>-->
+                <dropForeignKeyConstraint baseTableName="user_authority_tab"
+                                          constraintName="fk_user_authority_authority_id"/>
         <modifyDataType tableName="authority_tab"
                         columnName="at_id"
                         newDataType="bigint"/>

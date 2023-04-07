@@ -2,18 +2,18 @@
 <configuration>
 
     <conversionRule conversionWord="http_method"
-                    converterClass="com.yuvaraj.financialManagement.common.log.HttpMethodConverter"/>
+                    converterClass="com.yuvaraj.financial.common.log.HttpMethodConverter"/>
     <conversionRule conversionWord="uri"
-                    converterClass="com.yuvaraj.financialManagement.common.log.UriConverter"/>
+                    converterClass="com.yuvaraj.financial.common.log.UriConverter"/>
     <conversionRule conversionWord="actorEmail"
-                    converterClass="com.yuvaraj.financialManagement.common.log.ActorEmailConverter"/>
+                    converterClass="com.yuvaraj.financial.common.log.ActorEmailConverter"/>
 
     <property name="LOGS" value="./logs"/>
 
     <appender name="Console"
               class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
-            <layout class="com.yuvaraj.financialManagement.common.log.configuration.MaskingPatternLayout">
+            <layout class="com.yuvaraj.financial.common.log.configuration.MaskingPatternLayout">
                 <maskPattern>\"password\"\s*:\s*\"(.*?)\"</maskPattern> <!-- Password JSON pattern -->
                 <Pattern>
                     %d{ISO8601} %highlight(%-5level) [%blue(%t)] %boldMagenta([method=%http_method]) %boldYellow([uri=%uri]) %boldYellow([email=%actorEmail]) %yellow(%C{1.}): %msg%n%throwable
