@@ -7,6 +7,7 @@ import com.yuvaraj.financial.repositories.UserRepository;
 import com.yuvaraj.financial.services.UserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -57,6 +58,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserEntity findByIdWithPassword(String userId) {
+        return userRepository.findByIdWithPassword(userId);
+    }
+
+    @Override
     public void patchStatus(@NotNull String userId, @NotNull UserEntity.Status status) throws UserNotFoundException {
         UserEntity userEntity = findById(userId);
         if (null == userEntity) {
@@ -71,4 +77,5 @@ public class UserServiceImpl implements UserService {
         userEntity.setStatus(status.getStatus());
         save(userEntity);
     }
+
 }

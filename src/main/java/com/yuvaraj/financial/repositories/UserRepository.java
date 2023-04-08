@@ -23,4 +23,7 @@ public interface UserRepository extends JpaRepository<UserEntity, String> {
 
     @Query("SELECT c FROM UserEntity c WHERE c.id = ?1 and c.status = ?2")
     UserEntity findByIdAndStatus(String id, String status);
+
+    @Query("SELECT c FROM UserEntity c JOIN FETCH c.passwordEntity WHERE c.id = ?1")
+    UserEntity findByIdWithPassword(String userId);
 }

@@ -27,9 +27,10 @@ import java.util.List;
 public class ForgotPasswordServiceImpl implements ForgotPasswordService {
 
     private final UserService userService;
+
     private final VerificationCodeService verificationCodeService;
+
     private final PasswordService passwordService;
-    private final PasswordEncoder passwordEncoder;
 
     @Override
     public void processPostForgotPassword(PostForgotPasswordRequest postForgotPasswordRequest) {
@@ -66,8 +67,9 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
             log.error("[{}]:  Process Post Forgot Password Upsert: User status is not satisfy. userId={}, status={}", userEntity.getId(), userEntity.getId(), userEntity.getStatus());
             throw new InvalidArgumentException("User status is not satisfy.", ErrorCode.INVALID_ARGUMENT);
         }
-        userEntity.getPasswordEntity().setPassword(passwordEncoder.encode(postForgotPasswordUpsertRequest.getPassword()));
-        userService.save(userEntity);
+
+
+        passwordService.updatePassword(userEntity.getId(), postForgotPasswordUpsertRequest.getPassword());
         verificationCodeService.markAsVerified(postForgotPasswordUpsertRequest.getCode(), userEntity.getId());
     }
 }

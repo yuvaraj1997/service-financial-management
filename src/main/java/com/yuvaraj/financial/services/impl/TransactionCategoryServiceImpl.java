@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yuvaraj.financial.exceptions.InvalidArgumentException;
 import com.yuvaraj.financial.exceptions.transactionCategory.TransactionCategoryAlreadyExistException;
 import com.yuvaraj.financial.helpers.ErrorCode;
+import com.yuvaraj.financial.models.common.DropdownOption;
 import com.yuvaraj.financial.models.common.SearchRequest;
 import com.yuvaraj.financial.models.common.SearchResponse;
 import com.yuvaraj.financial.models.controllers.v1.transaction.transactionCategory.PostTransactionCategoryRequest;
@@ -17,6 +18,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -29,6 +32,11 @@ public class TransactionCategoryServiceImpl implements TransactionCategoryServic
     public TransactionCategoryEntity save(TransactionCategoryEntity transactionCategoryEntity) {
         return transactionCategoryRepository.saveAndFlush(transactionCategoryEntity);
     }
+
+    private List<TransactionCategoryEntity> findAll() {
+        return transactionCategoryRepository.findAll(Sort.by(Sort.Direction.ASC, "category"));
+    }
+
 
     @Override
     public TransactionCategoryEntity findById(Integer id) {
@@ -84,5 +92,22 @@ public class TransactionCategoryServiceImpl implements TransactionCategoryServic
         return new SearchResponse<TransactionCategoryEntity>().computeData(
                 transactionCategoryRepository.search(searchRequest.getSearch(),
                         searchRequest.getPageableRequest("category", Sort.Direction.ASC, new String[]{"category", "createdDate", "updatedDate"})));
+    }
+
+    @Override
+    public List<DropdownOption> dropdowns() {
+        List<DropdownOption> dropdownOptions = new ArrayList<>();
+
+        List<TransactionCategoryEntity> transactionCategoryEntities = findAll();
+
+        if (transactionCategoryEntities.isEmpty()) {
+            return dropdownOptions;
+        }
+
+        for (TransactionCategoryEntity transactionCategoryEntity : transactionCategoryEntities) {
+            dropdownOptions.add(new DropdownOption(transactionCategoryEntity.getId().toString(), transactionCategoryEntity.getCategory()));
+        }
+
+        return dropdownOptions;
     }
 }

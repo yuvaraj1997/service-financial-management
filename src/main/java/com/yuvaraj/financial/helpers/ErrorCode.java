@@ -19,6 +19,8 @@ public enum ErrorCode {
     VERIFICATION_CODE_RESEND_NOT_ALLOWED(3003, "Please retry after a while. Thank you"),
     INVALID_USERNAME_OR_PASSWORD(3004, "Invalid username or password."),
     MAX_NUMBER_OF_SESSION_REACHED(3005, "Max number of session reached. Please choose one of this device to be removed."),
+    INVALID_PASSWORD(3006, "Invalid password. Please retry again."),
+    SAME_PASSWORD(3007, "Update password requesting is same as previous password."),
     TRANSACTION_CATEGORY_ALREADY_EXIST(4000, "Transaction category already exist. Please enter a new category name."),
     TRANSACTION_CATEGORY_NOT_FOUND(4001, "Transaction category not found. If the error still persist please contact us."),
     WALLET_NAME_ALREADY_EXIST(5000, "Wallet name already exist. Please enter a new wallet name."),

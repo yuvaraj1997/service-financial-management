@@ -21,5 +21,7 @@ public interface UserService {
 
     UserEntity findByEmailWithPassword(String email);
 
+    UserEntity findByIdWithPassword(String userId);
+
     void patchStatus(String userId, UserEntity.Status status) throws UserNotFoundException;
 }

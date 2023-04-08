@@ -22,6 +22,18 @@ public class ValidationHelper {
 
     }
 
+    public static class PreferredNameSpecs {
+
+        private PreferredNameSpecs() {
+            throw new IllegalStateException("Utility class");
+        }
+
+        public static final String REGEX_PATTERN = "^[a-zA-Z/.@'\\- ]*$";
+
+        public static final String REGEX_PATTERN_ERROR_MESSAGE = "Preferred name should be valid";
+
+    }
+
     public static class PasswordSpecs {
 
         private PasswordSpecs() {

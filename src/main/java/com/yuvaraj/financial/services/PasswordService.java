@@ -8,16 +8,7 @@ import com.yuvaraj.financial.models.db.UserEntity;
  */
 public interface PasswordService {
 
-    /**
-     * @param password   String request
-     * @param customerId String request
-     */
-    void upsertPassword(String password, String customerId);
+    boolean isSamePassword(String rawPassword, String encodePassword);
 
-
-    /**
-     * @param userEntity Object request
-     * @return PasswordEntity
-     */
-    PasswordEntity getByCustomerEntity(UserEntity userEntity);
+    void updatePassword(String userId, String password);
 }
