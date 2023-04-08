@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.Date;
 
+import static com.yuvaraj.financial.helpers.FrequencyHelper.validateFrequencyForCustom;
 import static com.yuvaraj.financial.helpers.ResponseHelper.ok;
 import static com.yuvaraj.financial.helpers.ResponseHelper.okAsJson;
 
@@ -57,19 +58,8 @@ public class TransactionController {
     @GetMapping(path = "{walletId}/summary", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> summary(Authentication authentication, @PathVariable String walletId, @RequestParam("type") FrequencyHelper.Frequency frequency,
                                           @RequestParam(name = "startDate", required = false) Date startDate, @RequestParam(name = "endDate", required = false) Date endDate) throws InvalidArgumentException {
-        if (frequency.getPeriod().equals(FrequencyHelper.Frequency.CUSTOM.getPeriod())) {
-            if (null == startDate) {
-                throw new InvalidArgumentException("startDate must not be null", ErrorCode.INVALID_ARGUMENT);
-            }
-            if (null == endDate) {
-                endDate = startDate;
-            }
-            if (endDate.before(startDate)) {
-                throw new InvalidArgumentException("endDate cannot be before start date", ErrorCode.INVALID_ARGUMENT);
-            }
 
-            frequency.setCustomDateRange(startDate, endDate);
-        }
+        validateFrequencyForCustom(frequency, startDate, endDate);
 
         return ok(transactionService.summary(walletId, frequency, authentication.getName()));
     }
@@ -78,19 +68,8 @@ public class TransactionController {
     @GetMapping(path = "{walletId}/transactions", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> transactions(Authentication authentication, @PathVariable String walletId, @RequestParam FrequencyHelper.Frequency frequency,
                                                @RequestParam(name = "startDate", required = false) Date startDate, @RequestParam(name = "endDate", required = false) Date endDate) throws InvalidArgumentException {
-        if (frequency.getPeriod().equals(FrequencyHelper.Frequency.CUSTOM.getPeriod())) {
-            if (null == startDate) {
-                throw new InvalidArgumentException("startDate must not be null", ErrorCode.INVALID_ARGUMENT);
-            }
-            if (null == endDate) {
-                endDate = startDate;
-            }
-            if (endDate.before(startDate)) {
-                throw new InvalidArgumentException("endDate cannot be before start date", ErrorCode.INVALID_ARGUMENT);
-            }
 
-            frequency.setCustomDateRange(startDate, endDate);
-        }
+        validateFrequencyForCustom(frequency, startDate, endDate);
 
         return ok(transactionService.transactions(walletId, frequency, authentication.getName()));
     }
