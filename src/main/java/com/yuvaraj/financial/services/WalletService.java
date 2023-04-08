@@ -7,10 +7,14 @@ import com.yuvaraj.financial.models.controllers.v1.transaction.wallet.getAllWall
 import com.yuvaraj.financial.models.controllers.v1.transaction.wallet.updateWallet.UpdateWalletRequest;
 import com.yuvaraj.financial.models.db.transaction.WalletEntity;
 
+import java.util.List;
+
 /**
  *
  */
 public interface WalletService {
+
+    List<WalletEntity> findAllByUserEntity(String userId);
 
     GetAllWalletResponse getAllByUserId(String userId);
 

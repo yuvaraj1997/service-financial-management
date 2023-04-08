@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * @author Yuvaraj
@@ -53,6 +54,22 @@ public class FrequencyHelper {
 
         public void setCustomDateRange(Date startDate, Date endDate) {
             this.dateRange = new DateRange(DateHelpers.resetToStartOfTheDay(startDate), DateHelpers.resetToEndOfTheDay(endDate));
+        }
+    }
+
+    public static void validateFrequencyForCustom(Frequency frequency, Date startDate, Date endDate) throws InvalidArgumentException {
+        if (Objects.equals(frequency.getPeriod(), FrequencyHelper.Frequency.CUSTOM.getPeriod())) {
+            if (null == startDate) {
+                throw new InvalidArgumentException("startDate must not be null", ErrorCode.INVALID_ARGUMENT);
+            }
+            if (null == endDate) {
+                endDate = startDate;
+            }
+            if (endDate.before(startDate)) {
+                throw new InvalidArgumentException("endDate cannot be before start date", ErrorCode.INVALID_ARGUMENT);
+            }
+
+            frequency.setCustomDateRange(startDate, endDate);
         }
     }
 

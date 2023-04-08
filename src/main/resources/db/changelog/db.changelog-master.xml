@@ -226,4 +226,13 @@
                                  referencedColumnNames="tct_id"
                                  referencedTableName="transaction_category_tab"/>
     </changeSet>
+    <changeSet id="202304081824" author="Yuvaraj">
+        <dropForeignKeyConstraint baseTableName="transaction_tab" constraintName="fk_transaction_category_id" />
+        <addAutoIncrement tableName="transaction_category_tab" columnName="tct_id" columnDataType="INT"/>
+        <addForeignKeyConstraint baseColumnNames="tt_transaction_category_id"
+                                 baseTableName="transaction_tab"
+                                 constraintName="fk_transaction_category_id"
+                                 referencedColumnNames="tct_id"
+                                 referencedTableName="transaction_category_tab"/>
+    </changeSet>
 </databaseChangeLog>

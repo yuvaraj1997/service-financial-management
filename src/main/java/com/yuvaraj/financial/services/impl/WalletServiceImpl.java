@@ -36,9 +36,14 @@ public class WalletServiceImpl implements WalletService {
     }
 
     @Override
+    public List<WalletEntity> findAllByUserEntity(String userId) {
+        return walletRepository.findAllByUserEntity(userService.findById(userId), Sort.by(Sort.Direction.ASC, "name"));
+    }
+
+    @Override
     public GetAllWalletResponse getAllByUserId(String userId) {
         GetAllWalletResponse getAllWalletResponse = new GetAllWalletResponse();
-        List<WalletEntity> walletEntities = walletRepository.findAllByUserEntity(userService.findById(userId), Sort.by(Sort.Direction.ASC, "name"));
+        List<WalletEntity> walletEntities = findAllByUserEntity(userId);
 
         if (null != walletEntities && !walletEntities.isEmpty()) {
             walletEntities.forEach(getAllWalletResponse::addWallet);

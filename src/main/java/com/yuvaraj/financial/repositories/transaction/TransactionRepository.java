@@ -19,4 +19,7 @@ public interface TransactionRepository extends JpaRepository<TransactionEntity, 
 
     @Query("SELECT te FROM TransactionEntity te where te.walletEntity = :walletEntity and te.transactionDate between :startDate and :endDate")
     List<TransactionEntity> getTransactions(@Param("walletEntity") WalletEntity walletEntity, @Param("startDate") Date startDate, @Param("endDate") Date endDate, Sort transactionDate);
+
+    @Query("SELECT COALESCE(SUM(te.amount),0) FROM TransactionEntity te where te.walletEntity in (:walletEntities) and te.type = :type and te.transactionDate between :startDate and :endDate")
+    long getSum(@Param("walletEntities") List<WalletEntity> walletEntities, Date startDate, Date endDate, String type);
 }

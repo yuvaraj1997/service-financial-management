@@ -20,6 +20,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -47,6 +48,12 @@ public class TransactionServiceImpl implements TransactionService {
     private TransactionEntity findByIdAndWalletEntity(String transactionId, WalletEntity walletEntity) {
         return transactionRepository.findByIdAndWalletEntity(transactionId, walletEntity);
     }
+
+    @Override
+    public long getSum(List<WalletEntity> walletEntities, FrequencyHelper.Frequency frequency, String type) throws InvalidArgumentException {
+        return transactionRepository.getSum(walletEntities, frequency.getDateRange().getStartDate(), frequency.getDateRange().getEndDate(), type);
+    }
+
 
     private void delete(TransactionEntity transactionEntity) {
         transactionRepository.delete(transactionEntity);

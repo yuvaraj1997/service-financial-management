@@ -76,7 +76,7 @@ public class TransactionController {
 
 
     @GetMapping(path = "{walletId}/transactions", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> transactions(Authentication authentication, @PathVariable String walletId, @RequestParam("type") FrequencyHelper.Frequency frequency,
+    public ResponseEntity<Object> transactions(Authentication authentication, @PathVariable String walletId, @RequestParam FrequencyHelper.Frequency frequency,
                                                @RequestParam(name = "startDate", required = false) Date startDate, @RequestParam(name = "endDate", required = false) Date endDate) throws InvalidArgumentException {
         if (frequency.getPeriod().equals(FrequencyHelper.Frequency.CUSTOM.getPeriod())) {
             if (null == startDate) {
