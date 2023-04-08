@@ -24,7 +24,7 @@ import static com.yuvaraj.financial.helpers.ResponseHelper.okAsJson;
 @Slf4j
 public class ForgotPasswordController {
 
-    private static final String STANDARD_LOG_INITIATE =  "Initiate to process, request={}";
+    private static final String STANDARD_LOG_INITIATE = "Initiate to process, request={}";
 
     @Autowired
     ForgotPasswordService forgotPasswordService;

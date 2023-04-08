@@ -1,7 +1,6 @@
 package com.yuvaraj.financial.controllers.user;
 
 import com.yuvaraj.financial.exceptions.InvalidArgumentException;
-import com.yuvaraj.financial.helpers.ErrorCode;
 import com.yuvaraj.financial.helpers.FrequencyHelper;
 import com.yuvaraj.financial.services.HomeService;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
-import java.util.Objects;
 
 import static com.yuvaraj.financial.helpers.FrequencyHelper.validateFrequencyForCustom;
 import static com.yuvaraj.financial.helpers.ResponseHelper.ok;
@@ -32,7 +30,7 @@ public class HomeController {
 
     @GetMapping(path = "total-spending", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> totalSpending(Authentication authentication, @Valid @RequestParam @NotNull(message = "Period cannot be empty / blank") FrequencyHelper.Frequency frequency,
-                                         @RequestParam(required = false) Date startDate, @RequestParam(required = false) Date endDate) throws InvalidArgumentException {
+                                                @RequestParam(required = false) Date startDate, @RequestParam(required = false) Date endDate) throws InvalidArgumentException {
 
         validateFrequencyForCustom(frequency, startDate, endDate);
 

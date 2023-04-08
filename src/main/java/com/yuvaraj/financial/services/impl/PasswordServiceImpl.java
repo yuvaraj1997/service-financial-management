@@ -1,11 +1,6 @@
 package com.yuvaraj.financial.services.impl;
 
-import com.google.common.base.Preconditions;
-import com.yuvaraj.financial.exceptions.InvalidArgumentException;
-import com.yuvaraj.financial.helpers.ErrorCode;
-import com.yuvaraj.financial.models.db.PasswordEntity;
 import com.yuvaraj.financial.models.db.UserEntity;
-import com.yuvaraj.financial.repositories.PasswordRepository;
 import com.yuvaraj.financial.services.PasswordService;
 import com.yuvaraj.financial.services.UserService;
 import lombok.AllArgsConstructor;

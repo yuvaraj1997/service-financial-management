@@ -15,7 +15,6 @@ import com.yuvaraj.financial.services.UserService;
 import com.yuvaraj.financial.services.VerificationCodeService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;

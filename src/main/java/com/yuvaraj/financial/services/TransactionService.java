@@ -9,7 +9,6 @@ import com.yuvaraj.financial.models.controllers.v1.transaction.transaction.updat
 import com.yuvaraj.financial.models.db.transaction.TransactionEntity;
 import com.yuvaraj.financial.models.db.transaction.WalletEntity;
 
-import java.util.Date;
 import java.util.List;
 
 /**

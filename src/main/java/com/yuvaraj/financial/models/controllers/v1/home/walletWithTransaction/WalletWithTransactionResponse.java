@@ -1,7 +1,6 @@
 package com.yuvaraj.financial.models.controllers.v1.home.walletWithTransaction;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.yuvaraj.financial.models.controllers.v1.transaction.wallet.getWalletResponse.GetWalletResponse;
 import com.yuvaraj.financial.models.db.transaction.TransactionEntity;
 import com.yuvaraj.financial.models.db.transaction.WalletEntity;
 import lombok.AllArgsConstructor;
