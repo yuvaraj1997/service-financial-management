@@ -8,6 +8,7 @@ import com.yuvaraj.financial.models.common.SearchResponse;
 import com.yuvaraj.financial.models.controllers.v1.transaction.transactionCategory.PostTransactionCategoryRequest;
 import com.yuvaraj.financial.models.controllers.v1.transaction.transactionCategory.PutTransactionCategoryRequest;
 import com.yuvaraj.financial.models.db.transaction.TransactionCategoryEntity;
+import com.yuvaraj.financial.models.db.transaction.TransactionTypeEntity;
 
 import java.util.List;
 
@@ -27,4 +28,6 @@ public interface TransactionCategoryService {
     SearchResponse<TransactionCategoryEntity> search(SearchRequest searchRequest);
 
     List<DropdownOption> dropdowns();
+
+    void createIfNotExist(String category, TransactionTypeEntity transactionTypeEntity);
 }

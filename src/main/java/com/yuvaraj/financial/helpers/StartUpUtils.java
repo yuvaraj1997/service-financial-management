@@ -3,7 +3,10 @@ package com.yuvaraj.financial.helpers;
 import com.yuvaraj.financial.models.db.AuthorityEntity;
 import com.yuvaraj.financial.models.db.PasswordEntity;
 import com.yuvaraj.financial.models.db.UserEntity;
+import com.yuvaraj.financial.models.db.transaction.TransactionTypeEntity;
 import com.yuvaraj.financial.services.AuthorityService;
+import com.yuvaraj.financial.services.TransactionCategoryService;
+import com.yuvaraj.financial.services.TransactionTypeService;
 import com.yuvaraj.financial.services.UserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +27,10 @@ public class StartUpUtils {
     private final UserService userService;
 
     private final AuthorityService authorityService;
+
+    private final TransactionCategoryService transactionCategoryService;
+
+    private final TransactionTypeService transactionTypeService;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -58,5 +65,43 @@ public class StartUpUtils {
             userService.save(userEntity);
         }
 
+    }
+
+    public void createTransactionTypeIfNotAvailable() {
+
+        for (TransactionTypeEntity.Type type: TransactionTypeEntity.Type.values()) {
+            log.info("Creating Transaction type {}", type.name());
+            transactionTypeService.createIfNotExist(type.name());
+        }
+
+    }
+
+    public void createTransactionCategoryIfNotAvailable() {
+        TransactionTypeEntity incomeType = transactionTypeService.findByType(TransactionTypeEntity.Type.Income.name());
+        transactionCategoryService.createIfNotExist("Salary", incomeType);
+        transactionCategoryService.createIfNotExist("Wages", incomeType);
+        transactionCategoryService.createIfNotExist("Commissions", incomeType);
+        transactionCategoryService.createIfNotExist("Investment", incomeType);
+
+        TransactionTypeEntity expensesType = transactionTypeService.findByType(TransactionTypeEntity.Type.Expenses.name());
+        transactionCategoryService.createIfNotExist("Rent", expensesType);
+        transactionCategoryService.createIfNotExist("Food", expensesType);
+        transactionCategoryService.createIfNotExist("Transportation", expensesType);
+        transactionCategoryService.createIfNotExist("Entertainment", expensesType);
+
+        TransactionTypeEntity billsType = transactionTypeService.findByType(TransactionTypeEntity.Type.Bills.name());
+        transactionCategoryService.createIfNotExist("Mortgage", billsType);
+        transactionCategoryService.createIfNotExist("Car payment", billsType);
+        transactionCategoryService.createIfNotExist("Credit card bills", billsType);
+
+        TransactionTypeEntity investmentType = transactionTypeService.findByType(TransactionTypeEntity.Type.Investments.name());
+        transactionCategoryService.createIfNotExist("Stocks", investmentType);
+        transactionCategoryService.createIfNotExist("Bonds", investmentType);
+        transactionCategoryService.createIfNotExist("Mutual Funds", investmentType);
+
+        TransactionTypeEntity othersType = transactionTypeService.findByType(TransactionTypeEntity.Type.Other.name());
+        transactionCategoryService.createIfNotExist("Gift", othersType);
+        transactionCategoryService.createIfNotExist("Donation", othersType);
+        transactionCategoryService.createIfNotExist("Taxes", othersType);
     }
 }

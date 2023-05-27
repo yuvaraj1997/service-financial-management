@@ -235,4 +235,34 @@
                                  referencedColumnNames="tct_id"
                                  referencedTableName="transaction_category_tab"/>
     </changeSet>
+
+    <changeSet id="202305271824" author="Yuvaraj">
+        <createTable tableName="transaction_type_tab">
+            <column name="ttt_id" type="INT">
+                <constraints primaryKey="true" primaryKeyName="ttt_id_pk"/>
+            </column>
+            <column name="ttt_type" type="varchar(255)"/>
+            <column name="ttt_record_create_date" type="DATETIME"/>
+            <column name="ttt_record_update_date" type="DATETIME"/>
+        </createTable>
+        <addUniqueConstraint tableName="transaction_type_tab" columnNames="ttt_type"/>
+        <addColumn tableName="transaction_category_tab">
+            <column name="tct_type_id" afterColumn="tct_category" type="INT"/>
+        </addColumn>
+        <addForeignKeyConstraint baseColumnNames="tct_type_id"
+                                 baseTableName="transaction_category_tab"
+                                 constraintName="fk_transaction_type_id"
+                                 referencedColumnNames="ttt_id"
+                                 referencedTableName="transaction_type_tab"/>
+    </changeSet>
+
+    <changeSet id="202305271826" author="Yuvaraj">
+        <dropForeignKeyConstraint baseTableName="transaction_category_tab" constraintName="fk_transaction_type_id" />
+        <addAutoIncrement tableName="transaction_type_tab" columnName="ttt_id" columnDataType="INT"/>
+        <addForeignKeyConstraint baseColumnNames="tct_type_id"
+                                 baseTableName="transaction_category_tab"
+                                 constraintName="fk_transaction_type_id"
+                                 referencedColumnNames="ttt_id"
+                                 referencedTableName="transaction_type_tab"/>
+    </changeSet>
 </databaseChangeLog>

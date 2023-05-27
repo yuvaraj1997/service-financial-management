@@ -10,6 +10,7 @@ import com.yuvaraj.financial.models.common.SearchResponse;
 import com.yuvaraj.financial.models.controllers.v1.transaction.transactionCategory.PostTransactionCategoryRequest;
 import com.yuvaraj.financial.models.controllers.v1.transaction.transactionCategory.PutTransactionCategoryRequest;
 import com.yuvaraj.financial.models.db.transaction.TransactionCategoryEntity;
+import com.yuvaraj.financial.models.db.transaction.TransactionTypeEntity;
 import com.yuvaraj.financial.repositories.transaction.TransactionCategoryRepository;
 import com.yuvaraj.financial.services.TransactionCategoryService;
 import lombok.AllArgsConstructor;
@@ -37,10 +38,13 @@ public class TransactionCategoryServiceImpl implements TransactionCategoryServic
         return transactionCategoryRepository.findAll(Sort.by(Sort.Direction.ASC, "category"));
     }
 
-
     @Override
     public TransactionCategoryEntity findById(Integer id) {
         return transactionCategoryRepository.findById(id).orElse(null);
+    }
+
+    private TransactionCategoryEntity findByCategory(String category) {
+        return transactionCategoryRepository.findByCategory(category).orElse(null);
     }
 
     @Override
@@ -109,5 +113,13 @@ public class TransactionCategoryServiceImpl implements TransactionCategoryServic
         }
 
         return dropdownOptions;
+    }
+
+    @Override
+    public void createIfNotExist(String category, TransactionTypeEntity transactionTypeEntity) {
+        if (null != findByCategory(category)) {
+            return;
+        }
+        save(new TransactionCategoryEntity(null, category, transactionTypeEntity, null, null));
     }
 }

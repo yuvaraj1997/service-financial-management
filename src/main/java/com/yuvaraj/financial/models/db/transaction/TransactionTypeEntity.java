@@ -1,6 +1,5 @@
 package com.yuvaraj.financial.models.db.transaction;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,35 +16,38 @@ import java.util.Date;
  */
 
 @Entity
-@Table(name = "transaction_category_tab")
+@Table(name = "transaction_type_tab")
 @Access(value = AccessType.FIELD)
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class TransactionCategoryEntity implements Serializable {
+public class TransactionTypeEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "tct_id")
+    @Column(name = "ttt_id")
     private Integer id;
 
-    @Column(name = "tct_category", unique = true)
-    private String category;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "tct_type_id", referencedColumnName = "ttt_id", nullable = false)
-    @JsonIgnore
-    private TransactionTypeEntity transactionTypeEntity;
+    @Column(name = "ttt_type", unique = true)
+    private String type;
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "tct_record_create_date")
+    @Column(name = "ttt_record_create_date")
     private Date createdDate;
 
     @UpdateTimestamp
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "tct_record_update_date")
+    @Column(name = "ttt_record_update_date")
     private Date updatedDate;
 
+    public enum Type {
+        Income,
+        Expenses,
+        Transfers,
+        Bills,
+        Investments,
+        Other
+    }
 }

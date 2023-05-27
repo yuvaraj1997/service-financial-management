@@ -34,7 +34,7 @@ public class UserController {
             throw new InvalidArgumentException("User cannot patch status for ownself.", ErrorCode.INVALID_ARGUMENT);
         }
         userService.patchStatus(userId, patchStatusRequest.getStatus());
-        log.info("User successfully {} , userId={}", patchStatusRequest.getStatus().getStatus(), userId);
+        log.info("User successfully patched status {} , userId={}", patchStatusRequest.getStatus().getStatus(), userId);
         return okAsJson();
     }
 }

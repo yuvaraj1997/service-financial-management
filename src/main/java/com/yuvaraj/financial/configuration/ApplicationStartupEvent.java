@@ -22,6 +22,8 @@ public class ApplicationStartupEvent implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception {
         startUpUtils.createAuthorityIfNotAvailable();
         startUpUtils.createSuperAdminUserIfNotAvailable();
+        startUpUtils.createTransactionTypeIfNotAvailable();
+        startUpUtils.createTransactionCategoryIfNotAvailable();
         log.info("Financial Management Service is starting up......");
     }
 
