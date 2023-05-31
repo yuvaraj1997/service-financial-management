@@ -113,7 +113,7 @@ public class VerificationCodeServiceImpl implements VerificationCodeService {
         VerificationCodeEntity verificationCodeEntity = findByCodeAndIdentifier(code, identifier);
         if (null == verificationCodeEntity) {
             log.info("[{}]: Invalid verification code id {} not found.", identifier, code);
-            throw new InvalidArgumentException("Invalid verification code", ErrorCode.INVALID_ARGUMENT);
+            throw new InvalidArgumentException("Invalid verification code", ErrorCode.VERIFICATION_CODE_NOT_FOUND);
         }
         if (!Arrays.asList(VerificationCodeEntity.Status.PENDING.getStatus(), VerificationCodeEntity.Status.USER_REQUESTED_AGAIN.getStatus()).contains(verificationCodeEntity.getStatus())) {
             log.info("[{}]: Verification code is not satisfy with code {} status={}.", identifier, code, verificationCodeEntity.getStatus());

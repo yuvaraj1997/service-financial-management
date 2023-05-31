@@ -70,7 +70,6 @@ public class StartUpUtils {
     public void createTransactionTypeIfNotAvailable() {
 
         for (TransactionTypeEntity.Type type: TransactionTypeEntity.Type.values()) {
-            log.info("Creating Transaction type {}", type.name());
             transactionTypeService.createIfNotExist(type.name());
         }
 

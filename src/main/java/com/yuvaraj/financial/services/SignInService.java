@@ -15,4 +15,6 @@ public interface SignInService {
     void handleSignInData(CustomUser user, AuthSuccessfulResponse authSuccessfulResponse, SignInRequest signInRequest) throws SignInMaxSessionReachedException;
 
     String getEmailAddressFromToken(String authorization) throws Exception;
+
+    void markAsSignOut(String userId);
 }

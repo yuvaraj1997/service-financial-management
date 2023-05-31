@@ -40,6 +40,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.yuvaraj.financial.models.db.SignInEntity.Status.FORCED_SIGN_OUT;
+import static com.yuvaraj.financial.models.db.SignInEntity.Status.SIGN_OUT;
 
 @Service
 @Slf4j
@@ -192,6 +193,19 @@ public class SignInServiceImpl implements SignInService, UserDetailsService {
 //        }
 //        log.info("[{}]: User sign reached the max number of session={}", userEntity.getId(), SignInEntity.MAX_SIGN_SESSION);
 //        throw new SignInMaxSessionReachedException("Max Number of session reached", new ArrayList<>(), ErrorCode.MAX_NUMBER_OF_SESSION_REACHED);
+    }
+
+    @Override
+    public void markAsSignOut(String userId) {
+        Page<SignInEntity> signInEntityPage = findLatestSignInData(userService.findById(userId), SignInEntity.Status.ACTIVE.getStatus(), PageRequest.of(0, 5, Sort.by(Sort.Direction.DESC, "createdDate")));
+        if (null == signInEntityPage || signInEntityPage.getContent().isEmpty()) {
+            return;
+        }
+        for (SignInEntity signInEntity : signInEntityPage.getContent()) {
+            signInEntity.setStatus(SIGN_OUT.getStatus());
+            update(signInEntity);
+            log.info("[{}]: Performed signed out.", userId);
+        }
     }
 
     private SignInEntity save(SignInEntity signInEntity) {
