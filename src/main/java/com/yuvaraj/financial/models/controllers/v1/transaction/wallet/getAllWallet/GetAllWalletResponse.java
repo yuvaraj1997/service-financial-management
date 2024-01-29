@@ -3,7 +3,7 @@ package com.yuvaraj.financial.models.controllers.v1.transaction.wallet.getAllWal
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.yuvaraj.financial.models.controllers.v1.transaction.wallet.getWalletResponse.GetWalletResponse;
+import com.yuvaraj.financial.helpers.DateHelpers;import com.yuvaraj.financial.models.controllers.v1.transaction.wallet.getWalletResponse.GetWalletResponse;
 import com.yuvaraj.financial.models.db.transaction.WalletEntity;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,6 +21,11 @@ public class GetAllWalletResponse {
     private List<GetWalletResponse> wallets = new ArrayList<>();
 
     public void addWallet(WalletEntity walletEntity) {
-        this.wallets.add(new GetWalletResponse(walletEntity.getId(), walletEntity.getName(), null, null, null));
+        this.wallets.add(new GetWalletResponse(walletEntity.getId(),
+                walletEntity.getName(),
+                walletEntity.getInitialBalance(),
+                DateHelpers.convertDateForEndResult(walletEntity.getCreatedDate()),
+                DateHelpers.convertDateForEndResult(walletEntity.getUpdatedDate())
+        ));
     }
 }

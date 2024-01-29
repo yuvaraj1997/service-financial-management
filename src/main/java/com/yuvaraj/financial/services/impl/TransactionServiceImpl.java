@@ -5,6 +5,7 @@ import com.yuvaraj.financial.exceptions.InvalidArgumentException;
 import com.yuvaraj.financial.helpers.DateHelpers;
 import com.yuvaraj.financial.helpers.ErrorCode;
 import com.yuvaraj.financial.helpers.FrequencyHelper;
+import com.yuvaraj.financial.helpers.TransactionUtils;
 import com.yuvaraj.financial.models.controllers.v1.transaction.transaction.createTransaction.CreateTransactionRequest;
 import com.yuvaraj.financial.models.controllers.v1.transaction.transaction.summary.SummaryTransactionResponse;
 import com.yuvaraj.financial.models.controllers.v1.transaction.transaction.transactions.TransactionsResponse;
@@ -63,17 +64,13 @@ public class TransactionServiceImpl implements TransactionService {
         WalletEntity walletEntity = walletService.findByIdAndUserId(createTransactionRequest.getWalletId(), userId);
         TransactionCategoryEntity transactionCategoryEntity = transactionCategoryService.get(createTransactionRequest.getCategoryId());
 
-        long amount = Math.abs(createTransactionRequest.getAmount());
-        if (createTransactionRequest.getType().name().equals(TransactionEntity.Type.EXPENSE.name())) {
-            amount = -amount;
-        }
+        long amount = TransactionUtils.formatAmountAccordingToType(transactionCategoryEntity.getTransactionTypeEntity().getType(), createTransactionRequest.getAmount());
 
         TransactionEntity transactionEntity = new TransactionEntity();
         transactionEntity.setAmount(amount);
         transactionEntity.setTransactionDate(createTransactionRequest.getTransactionDate());
         transactionEntity.setWalletEntity(walletEntity);
         transactionEntity.setTransactionCategoryEntity(transactionCategoryEntity);
-        transactionEntity.setType(createTransactionRequest.getType().name());
         transactionEntity.setNotes(createTransactionRequest.getNotes());
         return save(transactionEntity);
     }
@@ -90,16 +87,12 @@ public class TransactionServiceImpl implements TransactionService {
 
         TransactionCategoryEntity transactionCategoryEntity = transactionCategoryService.get(updateTransactionRequest.getCategoryId());
 
-        long amount = Math.abs(updateTransactionRequest.getAmount());
-        if (updateTransactionRequest.getType().name().equals(TransactionEntity.Type.EXPENSE.name())) {
-            amount = -amount;
-        }
+        long amount = TransactionUtils.formatAmountAccordingToType(transactionCategoryEntity.getTransactionTypeEntity().getType(), updateTransactionRequest.getAmount());
 
         transactionEntity.setAmount(amount);
         transactionEntity.setTransactionDate(updateTransactionRequest.getTransactionDate());
         transactionEntity.setWalletEntity(walletEntity);
         transactionEntity.setTransactionCategoryEntity(transactionCategoryEntity);
-        transactionEntity.setType(updateTransactionRequest.getType().name());
         transactionEntity.setNotes(updateTransactionRequest.getNotes());
         return save(transactionEntity);
     }

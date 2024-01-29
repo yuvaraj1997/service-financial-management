@@ -48,9 +48,6 @@ public class TransactionEntity implements Serializable {
     @JsonIgnore
     private TransactionCategoryEntity transactionCategoryEntity;
 
-    @Column(name = "tt_type", nullable = false)
-    private String type;
-
     @Column(name = "tt_notes", nullable = false)
     private String notes;
 

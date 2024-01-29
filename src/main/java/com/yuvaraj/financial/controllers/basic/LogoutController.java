@@ -21,11 +21,15 @@ import static com.yuvaraj.financial.helpers.ResponseHelper.okAsJson;
 @Slf4j
 public class LogoutController {
 
+    private final SignInService signInService;
+
     @Autowired
-    SignInService signInService;
+    public LogoutController(SignInService signInService) {
+        this.signInService = signInService;
+    }
 
     @PostMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> logout(Authentication authentication) throws UserAlreadyExistException, VerificationCodeMaxLimitReachedException, VerificationCodeResendNotAllowedException {
+    public ResponseEntity<Object> logout(Authentication authentication) {
         if (null == authentication) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }

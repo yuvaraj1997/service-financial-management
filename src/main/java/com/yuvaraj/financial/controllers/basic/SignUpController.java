@@ -32,8 +32,13 @@ import static com.yuvaraj.financial.helpers.ResponseHelper.okAsJson;
 public class SignUpController {
 
     private static final String STANDARD_LOG_INITIATE = "Initiate to process, request={}";
+
+    private final SignUpService signUpService;
+
     @Autowired
-    SignUpService signUpService;
+    public SignUpController(SignUpService signUpService) {
+        this.signUpService = signUpService;
+    }
 
     @PostMapping(path = "", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> postSignUp(@Valid @RequestBody PostSignUpRequest postSignUpRequest) throws UserAlreadyExistException, VerificationCodeMaxLimitReachedException, VerificationCodeResendNotAllowedException {

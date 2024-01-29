@@ -20,7 +20,10 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -99,20 +102,22 @@ public class TransactionCategoryServiceImpl implements TransactionCategoryServic
     }
 
     @Override
-    public List<DropdownOption> dropdowns() {
-        List<DropdownOption> dropdownOptions = new ArrayList<>();
-
+    public Map<String, List<DropdownOption>> dropdowns() {
         List<TransactionCategoryEntity> transactionCategoryEntities = findAll();
 
         if (transactionCategoryEntities.isEmpty()) {
-            return dropdownOptions;
+            return new HashMap<>();
         }
+
+        Map<String, List<DropdownOption>> map = new HashMap<>();
 
         for (TransactionCategoryEntity transactionCategoryEntity : transactionCategoryEntities) {
-            dropdownOptions.add(new DropdownOption(transactionCategoryEntity.getId().toString(), transactionCategoryEntity.getCategory()));
+            String type = transactionCategoryEntity.getTransactionTypeEntity().getType();
+            map.computeIfAbsent(type, k -> new ArrayList<>())
+               .add(new DropdownOption(transactionCategoryEntity.getId().toString(), transactionCategoryEntity.getCategory()));
         }
 
-        return dropdownOptions;
+        return map;
     }
 
     @Override

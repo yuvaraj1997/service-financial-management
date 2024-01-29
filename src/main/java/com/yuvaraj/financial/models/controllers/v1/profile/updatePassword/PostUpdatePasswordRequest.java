@@ -19,10 +19,10 @@ public class PostUpdatePasswordRequest {
 
     @JsonProperty("password")
     @NotBlank(message = "Password is mandatory")
-    @Pattern(
-            regexp = ValidationHelper.PasswordSpecs.REGEX_PATTERN,
-            message = ValidationHelper.PasswordSpecs.REGEX_PATTERN_ERROR_MESSAGE
-    )
+//    @Pattern(
+//            regexp = ValidationHelper.PasswordSpecs.REGEX_PATTERN,
+//            message = ValidationHelper.PasswordSpecs.REGEX_PATTERN_ERROR_MESSAGE
+//    )
     private String password;
 
     @JsonProperty("newPassword")

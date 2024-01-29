@@ -11,6 +11,7 @@ import com.yuvaraj.financial.models.db.transaction.TransactionCategoryEntity;
 import com.yuvaraj.financial.models.db.transaction.TransactionTypeEntity;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -27,7 +28,7 @@ public interface TransactionCategoryService {
 
     SearchResponse<TransactionCategoryEntity> search(SearchRequest searchRequest);
 
-    List<DropdownOption> dropdowns();
+    Map<String, List<DropdownOption>> dropdowns();
 
     void createIfNotExist(String category, TransactionTypeEntity transactionTypeEntity);
 }

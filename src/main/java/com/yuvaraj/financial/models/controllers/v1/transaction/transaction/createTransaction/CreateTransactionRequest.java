@@ -36,10 +36,6 @@ public class CreateTransactionRequest {
     @NotNull(message = "Category ID is required")
     Integer categoryId;
 
-    @JsonProperty("type")
-    @NotNull(message = "Transaction Type is required")
-    TransactionEntity.Type type;
-
     @JsonProperty("notes")
     @Length(max = 255, message = "Cannot exceed 255 characters.")
     String notes;
