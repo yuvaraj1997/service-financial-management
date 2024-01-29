@@ -1,6 +1,6 @@
-Just creating a backend for customer cruds
+Just creating a backend.
 
-Goal to create a blog or forum.
+Goal to create a service financial management.
 
 Currently, nothing much to say will write more in the future.
 
